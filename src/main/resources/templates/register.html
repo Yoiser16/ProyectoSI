@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Registro</title>
+    <style>
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f5f6fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .main-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 60px;
+        }
+        .illustration-side {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .illustration-side img {
+            width: 320px;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+            margin-bottom: 10px;
+        }
+        .form-container {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+            padding: 40px 30px 30px 30px;
+            min-width: 340px;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 24px;
+            font-size: 2rem;
+            color: #007bff;
+        }
+        .form-container label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #333;
+        }
+        .form-container input[type="text"],
+        .form-container input[type="email"],
+        .form-container input[type="password"] {
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 18px;
+            border: 1px solid #bbb;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border 0.2s;
+            background: #f7faff;
+        }
+        .form-container input:focus {
+            border: 1.5px solid #007bff;
+            outline: none;
+        }
+        .form-container button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(90deg, #007bff 60%, #00c6ff 100%);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(0,123,255,0.08);
+        }
+        .form-container button:hover {
+            background: linear-gradient(90deg, #0056b3 60%, #00aaff 100%);
+            transform: translateY(-2px) scale(1.03);
+        }
+        .form-container .link {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 0.98rem;
+        }
+        .form-container .link:hover {
+            text-decoration: underline;
+        }
+        .form-container .error {
+            color: #d32f2f;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+        .password-criteria {
+            margin-bottom: 10px;
+            font-size: 0.98rem;
+        }
+        .criteria-met {
+            color: #388e3c;
+            font-weight: bold;
+        }
+        .criteria-not-met {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .password-wrapper input[type="password"],
+        .password-wrapper input[type="text"] {
+            width: 100%;
+            padding-right: 38px;
+            box-sizing: border-box;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: #888;
+            user-select: none;
+        }
+        .toggle-password:hover {
+            color: #007bff;
+        }
+        @media (max-width: 1100px) {
+            .main-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            .illustration-side img {
+                width: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="illustration-side">
+            <img src="/img/logoU.png" alt="Logo institucional">
+        </div>
+        <div class="form-container">
+            <h2>Registro de usuario</h2>
+            <form th:action="@{/auth/register}" method="post" autocomplete="off">
+                <label>Nombre</label>
+                <input type="text" name="nombre" placeholder="Nombre completo" required/>
+                <label>Email</label>
+                <input type="email" name="email" placeholder="Correo electrónico" required/>
+                <label>Contraseña</label>
+                <div class="password-wrapper">
+                    <input type="password" id="password" name="password" placeholder="Contraseña" required oninput="validatePassword()"/>
+                    <span class="toggle-password" onclick="togglePassword('password', this)">👁️</span>
+                </div>
+                <div class="password-criteria">
+                    <span id="length" class="criteria-not-met">❌ Mínimo 8 caracteres</span><br>
+                    <span id="uppercase" class="criteria-not-met">❌ Al menos una mayúscula</span><br>
+                    <span id="number" class="criteria-not-met">❌ Al menos un número</span><br>
+                    <span id="special" class="criteria-not-met">❌ Al menos un carácter especial</span>
+                </div>
+                <button type="submit">Registrarse</button>
+            </form>
+            <div th:if="${error}" class="error" th:text="${error}"></div>
+            <a class="link" th:href="@{/auth/login}">¿Ya tienes cuenta? Inicia sesión</a>
+        </div>
+    </div>
+    <script>
+        function validatePassword() {
+            const password = document.getElementById('password').value;
+            const length = password.length >= 8;
+            const uppercase = /[A-Z]/.test(password);
+            const number = /\d/.test(password);
+            const special = /[!@#$%^&*()_+\-={}:;"'<>,.?/]/.test(password);
+
+            document.getElementById('length').innerHTML = (length ? '✔️' : '❌') + ' Mínimo 8 caracteres';
+            document.getElementById('length').className = length ? 'criteria-met' : 'criteria-not-met';
+
+            document.getElementById('uppercase').innerHTML = (uppercase ? '✔️' : '❌') + ' Al menos una mayúscula';
+            document.getElementById('uppercase').className = uppercase ? 'criteria-met' : 'criteria-not-met';
+
+            document.getElementById('number').innerHTML = (number ? '✔️' : '❌') + ' Al menos un número';
+            document.getElementById('number').className = number ? 'criteria-met' : 'criteria-not-met';
+
+            document.getElementById('special').innerHTML = (special ? '✔️' : '❌') + ' Al menos un carácter especial';
+            document.getElementById('special').className = special ? 'criteria-met' : 'criteria-not-met';
+        }
+
+        function togglePassword(id, element) {
+            const input = document.getElementById(id);
+            if (input.type === "password") {
+                input.type = "text";
+                element.innerHTML = "👁️";
+            } else {
+                input.type = "password";
+                element.innerHTML = "👁️";
+            }
+        }
+    </script>
+</body>
+</html>
