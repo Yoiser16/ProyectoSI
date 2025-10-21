@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Lugar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body {
+            background: #f5f7fa;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .container {
+            max-width: 500px;
+            margin: 48px auto 0 auto;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+            padding: 36px 32px 28px 32px;
+        }
+        .container h2 {
+            color: #007bff;
+            margin-bottom: 24px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #b0c4de;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus, select:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+        .btn-save {
+            background: linear-gradient(90deg, #007bff 60%, #00c6ff 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 0;
+            font-size: 1.08rem;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+        .btn-save:hover {
+            background: linear-gradient(90deg, #0056b3 60%, #00aaff 100%);
+        }
+        .back-link {
+            display: block;
+            margin-top: 18px;
+            color: #007bff;
+            text-decoration: none;
+            text-align: center;
+            font-size: 1rem;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .icon-prefix {
+            margin-right: 8px;
+        }
+        .footer {
+            width: 100%;
+            background: linear-gradient(90deg, #222, #444);
+            color: #fff;
+            text-align: center;
+            padding: 14px 0 10px 0;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            margin-top: 40px;
+        }
+        @media (max-width: 600px) {
+            .container { padding: 18px 5vw; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>
+            <i class="fa-solid fa-building icon-prefix"></i>
+            <span th:text="${lugar.id != null ? 'Editar Lugar' : 'Nuevo Lugar'}">Editar Lugar</span>
+        </h2>
+        
+        <form th:action="@{/admin/lugares/guardar}" th:object="${lugar}" method="post">
+            <input type="hidden" th:field="*{id}" />
+            
+            <div class="form-group">
+                <label for="nombre">
+                    <i class="fa-solid fa-tag icon-prefix"></i>Nombre del lugar
+                </label>
+                <input type="text" id="nombre" th:field="*{nombre}" placeholder="Ej: Gimnasio, Biblioteca, Sala de estudio" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="horario">
+                    <i class="fa-solid fa-clock icon-prefix"></i>Horario de funcionamiento
+                </label>
+                <input type="text" id="horario" th:field="*{horario}" placeholder="Ej: 6:00 AM - 9:00 PM, Lunes a Sábado" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="estado">
+                    <i class="fa-solid fa-toggle-on icon-prefix"></i>Estado actual
+                </label>
+                <select id="estado" th:field="*{estado}" required>
+                    <option value="">Selecciona un estado</option>
+                    <option value="abierto">🟢 Abierto</option>
+                    <option value="cerrado">🔴 Cerrado</option>
+                    <option value="mantenimiento">🔧 En mantenimiento</option>
+                    <option value="reservado">📅 Reservado</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn-save">
+                <i class="fa-solid fa-floppy-disk"></i> Guardar cambios
+            </button>
+        </form>
+        
+        <a class="back-link" th:href="@{/admin/lugares}">
+            <i class="fa-solid fa-arrow-left"></i> Volver a la lista
+        </a>
+    </div>
+    
+    <div class="footer">
+        © Yoiser Agualimpia, Januar Diaz - 2025
+    </div>
+</body>
+</html>

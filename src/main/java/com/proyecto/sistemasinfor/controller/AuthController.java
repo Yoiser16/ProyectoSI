@@ -4,8 +4,10 @@ import com.proyecto.sistemasinfor.dto.LoginRequest;
 import com.proyecto.sistemasinfor.dto.PasswordResetRequest;
 import com.proyecto.sistemasinfor.dto.RegisterRequest;
 import com.proyecto.sistemasinfor.model.User;
+import com.proyecto.sistemasinfor.model.Role;
 import com.proyecto.sistemasinfor.service.AuthService;
 import com.proyecto.sistemasinfor.service.MailService;
+import com.proyecto.sistemasinfor.service.UserService;
 import java.util.UUID;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,28 +28,64 @@ public class AuthController {
     @Autowired
     private MailService mailService;
 
+    @Autowired
+    private UserService userService;
+
     // Mapa temporal para tokens (en producción usa base de datos)
     private Map<String, String> resetTokens = new HashMap<>();
 
+    @GetMapping("/seleccionar-perfil")
+    public String seleccionarPerfilPage() {
+        return "seleccionar-perfil";
+    }
+
+    @PostMapping("/seleccionar-perfil")
+    public String seleccionarPerfil(@RequestParam("rol") String rol, HttpSession session) {
+        // Validar y guardar rol seleccionado en sesión
+        try {
+            Role role = Role.valueOf(rol);
+            session.setAttribute("rolSeleccionado", role);
+        } catch (IllegalArgumentException ex) {
+            session.removeAttribute("rolSeleccionado");
+        }
+        return "redirect:/auth/login";
+    }
+
     @GetMapping("/login")
-    public String showLoginForm() {
+    public String showLoginForm(HttpSession session, Model model) {
+        Object rolSel = session.getAttribute("rolSeleccionado");
+        if (rolSel == null) {
+            return "redirect:/auth/seleccionar-perfil";
+        }
+        model.addAttribute("rolSeleccionado", rolSel.toString());
         return "login";
     }
 
     @PostMapping("/login")
     public String login(@RequestParam String email, @RequestParam String password,
-            Model model, HttpSession session) {
+        Model model, HttpSession session) {
         LoginRequest request = new LoginRequest();
         request.setEmail(email);
         request.setPassword(password);
 
         Optional<User> userOpt = authService.login(request);
         if (userOpt.isPresent()) {
-            session.setAttribute("usuario", userOpt.get().getEmail());
-            session.setAttribute("nombreUsuario", userOpt.get().getNombre()); // <-- Agrega esta línea
+            User usuario = userOpt.get();
+            // Validar que el usuario tenga el rol seleccionado
+            Role rolSeleccionado = (Role) session.getAttribute("rolSeleccionado");
+            if (rolSeleccionado != null && usuario.getRol() != null && usuario.getRol() != rolSeleccionado) {
+                model.addAttribute("error", "No tienes permisos para el perfil seleccionado. Elige otro perfil.");
+                model.addAttribute("rolSeleccionado", rolSeleccionado.toString());
+                return "login";
+            }
+            session.setAttribute("usuario", usuario);
+            session.setAttribute("nombreUsuario", usuario.getNombre());
+            session.setAttribute("rol", usuario.getRol());
+            session.setAttribute("userRole", usuario.getRol().name()); // Agregar para compatibilidad con las vistas
             return "redirect:/menu";
         }
         model.addAttribute("error", "Credenciales inválidas");
+        model.addAttribute("rolSeleccionado", String.valueOf(session.getAttribute("rolSeleccionado")));
         return "login";
     }
 
@@ -58,7 +96,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public String register(@RequestParam String nombre, @RequestParam String email, @RequestParam String password,
-            Model model) {
+        Model model, HttpSession session) {
         if (nombre.isEmpty() || email.isEmpty() || password.isEmpty()) {
             model.addAttribute("error", "Todos los campos son obligatorios.");
             return "register";
@@ -91,7 +129,12 @@ public class AuthController {
         request.setEmail(email);
         request.setPassword(password);
 
-        authService.register(request);
+        Role rolSel = (Role) session.getAttribute("rolSeleccionado");
+        if (rolSel != null) {
+            authService.registerWithRole(request, rolSel);
+        } else {
+            authService.register(request);
+        }
         return "redirect:/auth/login";
     }
 
@@ -102,8 +145,8 @@ public class AuthController {
 
     @PostMapping("/reset-password")
     public String resetPassword(@RequestParam String newPassword, HttpSession session, Model model) {
-        String email = (String) session.getAttribute("usuario");
-        if (email == null) {
+        User usuario = (User) session.getAttribute("usuario");
+        if (usuario == null) {
             model.addAttribute("error", "Debes iniciar sesión para cambiar tu contraseña.");
             return "reset-password";
         }
@@ -116,8 +159,8 @@ public class AuthController {
             return "reset-password";
         }
 
-        PasswordResetRequest request = new PasswordResetRequest();
-        request.setEmail(email); // Solo el usuario en sesión
+    PasswordResetRequest request = new PasswordResetRequest();
+    request.setEmail(usuario.getEmail()); // Solo el usuario en sesión
         request.setNewPassword(newPassword);
 
         boolean result = authService.resetPassword(request);
@@ -190,5 +233,46 @@ public class AuthController {
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/auth/login";
+    }
+
+    @GetMapping("/perfil")
+    public String mostrarPerfil(HttpSession session, Model model) {
+        User usuario = (User) session.getAttribute("usuario");
+        if (usuario == null) {
+            return "redirect:/auth/login";
+        }
+        model.addAttribute("usuario", usuario);
+        return "perfil";
+    }
+
+    @PostMapping("/perfil")
+    public String actualizarPerfil(@ModelAttribute("usuario") User usuarioForm, HttpSession session, Model model) {
+        User usuarioSesion = (User) session.getAttribute("usuario");
+        if (usuarioSesion == null) {
+            return "redirect:/auth/login";
+        }
+        usuarioSesion.setNombre(usuarioForm.getNombre());
+        userService.actualizarUsuario(usuarioSesion);
+        session.setAttribute("usuario", usuarioSesion);
+        model.addAttribute("usuario", usuarioSesion);
+        model.addAttribute("mensaje", "Perfil actualizado correctamente.");
+        return "perfil";
+    }
+
+    // Enviar recomendaciones fitness al correo del usuario actual
+    @PostMapping("/enviar-recomendaciones")
+    public String enviarRecomendaciones(HttpSession session, Model model) {
+        User usuario = (User) session.getAttribute("usuario");
+        if (usuario == null) {
+            return "redirect:/auth/login";
+        }
+        try {
+            mailService.sendFitnessRecommendations(usuario);
+            model.addAttribute("success", "Te enviamos recomendaciones fitness a tu correo.");
+        } catch (Exception ex) {
+            model.addAttribute("error", "No se pudo enviar el correo: " + ex.getMessage());
+        }
+        model.addAttribute("usuario", usuario);
+        return "perfil";
     }
 }

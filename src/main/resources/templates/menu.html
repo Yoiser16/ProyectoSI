@@ -2,164 +2,348 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Menú Principal</title>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            background: #f5f6fa;
-            margin: 0;
+            background: #f5f7fa;
             font-family: 'Segoe UI', Arial, sans-serif;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
+
+        /* ==== TOPBAR ==== */
         .topbar {
-            width: 100%;
-            background: #fff;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            background: linear-gradient(90deg, #505050, #505050);
+            color: #fff;
+            padding: 10px 28px;
             display: flex;
+            justify-content: flex-end;
             align-items: center;
-            justify-content: space-between;
-            padding: 0 36px;
-            height: 68px;
-        }
-        .logo-panel img {
-            height: 48px;
-        }
-        .user-menu {
+            font-size: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             position: relative;
-            display: inline-block;
+            z-index: 20;
         }
-        .user-name-btn {
-            background: none;
-            border: none;
-            font-size: 1.08rem;
-            color: #007bff;
-            font-weight: 600;
+        .user-info {
+            margin-right: 24px;
             cursor: pointer;
-            padding: 10px 18px;
-            border-radius: 22px;
-            transition: background 0.2s;
+            font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 8px;
+            transition: opacity 0.2s;
         }
-        .user-name-btn:hover, .user-name-btn.active {
-            background: #f0f6ff;
-        }
+        .user-info:hover { opacity: 0.85; }
+        .user-info svg { margin-left: 6px; }
+
         .user-dropdown {
             display: none;
             position: absolute;
-            right: 0;
-            top: 110%;
+            right: 130px;
+            top: 52px;
             background: #fff;
-            min-width: 180px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+            border: 1px solid #e0e6ed;
             border-radius: 10px;
-            z-index: 100;
-            padding: 8px 0;
-        }
-        .user-menu.open .user-dropdown {
-            display: block;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            min-width: 200px;
+            animation: fadeIn 0.3s ease;
         }
         .user-dropdown a {
             display: block;
-            padding: 12px 22px;
-            color: #222;
+            padding: 12px 18px;
+            color: #333;
             text-decoration: none;
-            font-size: 1rem;
-            transition: background 0.18s;
+            font-size: 0.95rem;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.2s;
         }
+        .user-dropdown a:last-child { border-bottom: none; }
         .user-dropdown a:hover {
-            background: #f5faff;
+            background: #f4f8ff;
             color: #007bff;
         }
-        .main-content {
-            max-width: 520px;
-            margin: 60px auto 0 auto;
-            background: #fff;
-            border-radius: 18px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.10);
-            padding: 38px 36px 32px 36px;
-            text-align: center;
+        .topbar a {
+            color: #f7f5f5;
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 20px;
+            transition: opacity 0.2s;
         }
-        .main-content h2 {
-            color: #007bff;
-            margin-bottom: 10px;
-            font-size: 1.7rem;
+        .topbar a:hover { opacity: 0.85; }
+
+        /* ==== HEADER ==== */
+        .portal-header {
+            display: flex;
+            align-items: center;
+            background: #ffffff;
+            padding: 24px 32px 12px 32px;
+            border-bottom: 1px solid #e6ebf1;
+        }
+        .portal-header img {
+            height: 60px;
+            margin-right: 18px;
+        }
+        .portal-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0056b3;
             letter-spacing: 1px;
         }
-        .main-content p {
-            color: #333;
-            margin-bottom: 28px;
-            font-size: 1.08rem;
+
+        /* ==== NAV BLOCKS ==== */
+        .navbar-blocks {
+            display: flex;
+            flex-wrap: wrap;
+            background: #fff;
+            padding: 18px 32px 0 32px;
+            gap: 16px;
+            border-bottom: 2px solid #e0e0e0;
         }
-        .chatbot-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: linear-gradient(90deg, #007bff 60%, #00c6ff 100%);
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            padding: 14px 28px;
-            font-size: 1.13rem;
-            font-weight: 600;
+        .nav-block {
+            background: #f0f6ff;
+            color: #0056b3;
+            min-width: 180px;
+            flex: 1 1 180px;
+            max-width: 240px;
+            border-radius: 14px 14px 0 0;
+            text-align: center;
+            padding: 24px 10px 16px 10px;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,123,255,0.10);
-            margin-bottom: 18px;
-            transition: background 0.2s, transform 0.15s;
+            transition: all 0.25s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
             text-decoration: none;
+            position: relative;
         }
-        .chatbot-btn:hover {
-            background: linear-gradient(90deg, #0056b3 60%, #00aaff 100%);
-            transform: translateY(-2px) scale(1.03);
+        .nav-block:hover, .nav-block.selected {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0,123,255,0.25);
         }
-        .chatbot-icon {
-            font-size: 1.4rem;
+        .nav-block i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .nav-block .block-title {
+            font-size: 1.15rem;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+        .nav-block .block-desc {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        /* ==== MAIN CONTENT ==== */
+        .main-content {
+            max-width: 700px;
+            margin: 50px auto;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.08);
+            padding: 40px 36px;
+            text-align: center;
+            flex: 1;
+        }
+        .main-content h2 {
+            color: #0056b3;
+            margin-bottom: 12px;
+            font-size: 1.9rem;
+        }
+        .main-content p {
+            color: #444;
+            margin-bottom: 30px;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        /* ==== FOOTER ==== */
+        .footer {
+            width: 100%;
+            background: linear-gradient(90deg, #222, #444);
+            color: #fff;
+            text-align: center;
+            padding: 16px 0;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            margin-top: auto;
+        }
+
+        /* ==== RESPONSIVE ==== */
+        @media (max-width: 900px) {
+            .navbar-blocks { gap: 10px; padding: 10px 4vw; }
+            .portal-header { padding: 14px 4vw; }
         }
         @media (max-width: 700px) {
-            .main-content { padding: 18px 5vw; }
-            .topbar { padding: 0 10px; }
+            .portal-header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 10px 2vw 0 2vw;
+            }
+            .portal-header img {
+                height: 38px;
+                margin-bottom: 6px;
+            }
+            .portal-title {
+                font-size: 1.2rem;
+            }
+            .navbar-blocks {
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px 2vw 0 2vw;
+            }
+            .nav-block {
+                min-width: 100%;
+                max-width: 100%;
+                border-radius: 12px;
+                margin-bottom: 2px;
+                padding: 18px 8px 12px 8px;
+            }
+            .main-content {
+                padding: 18px 5vw;
+                margin: 18px auto;
+            }
+        }
+        @media (max-width: 480px) {
+            .topbar {
+                flex-direction: column;
+                align-items: flex-end;
+                padding: 8px 4vw;
+                font-size: 0.95rem;
+            }
+            .user-info { margin-right: 0; }
+            .user-dropdown {
+                right: 4vw;
+                top: 44px;
+                min-width: 150px;
+            }
+            .main-content {
+                padding: 12px 2vw;
+            }
+            .footer {
+                font-size: 0.85rem;
+                padding: 10px 0;
+            }
+        }
+
+        /* Animación dropdown */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
-</head>
-<body>
-    <div class="topbar">
-        <div class="logo-panel">
-            <img src="/img/logoU.png" alt="Logo Uniremington">
-        </div>
-        <div class="user-menu" id="userMenu">
-            <button class="user-name-btn" onclick="toggleMenu()" id="userBtn">
-                <span th:text="${session.nombreUsuario}">Usuario</span>
-                <svg width="18" height="18" viewBox="0 0 20 20"><path fill="#007bff" d="M5.5 8l4.5 4 4.5-4z"/></svg>
-            </button>
-            <div class="user-dropdown" id="userDropdown">
-                <a th:href="@{/auth/reset-password}">Editar perfil / Cambiar contraseña</a>
-                <a th:href="@{/auth/logout}">Cerrar sesión</a>
-            </div>
-        </div>
-    </div>
-    <div class="main-content">
-        <h2>Panel principal</h2>
-        <p>
-            Bienvenido a tu panel.<br>
-            Accede a nuestro <b>chatbot inteligente</b> para resolver tus dudas, recibir asistencia o explorar información del sistema.
-        </p>
-        <a class="chatbot-btn" th:href="@{/chatbot}">
-            <span class="chatbot-icon">🤖</span>
-            Ir al Chatbot
-        </a>
-    </div>
+
     <script>
-        function toggleMenu() {
-            const menu = document.getElementById('userMenu');
-            menu.classList.toggle('open');
-        }
-        // Cierra el menú si se hace clic fuera
-        document.addEventListener('click', function(event) {
-            const menu = document.getElementById('userMenu');
-            const btn = document.getElementById('userBtn');
-            if (!menu.contains(event.target)) {
-                menu.classList.remove('open');
+        document.addEventListener("DOMContentLoaded", function() {
+            const userInfo = document.querySelector('.user-info');
+            const dropdown = document.querySelector('.user-dropdown');
+            if(userInfo && dropdown) {
+                userInfo.addEventListener('click', function(e) {
+                    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+                    e.stopPropagation();
+                });
+                document.addEventListener('click', function() {
+                    dropdown.style.display = 'none';
+                });
             }
         });
     </script>
+</head>
+<body>
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <span class="user-info" th:text="${session.nombreUsuario}">Usuario
+            <svg width="14" height="14" viewBox="0 0 20 20"><path fill="#fff" d="M5.5 8l4.5 4.5L14.5 8z"/></svg>
+        </span>
+        <div class="user-dropdown">
+            <a th:href="@{/perfil}"><i class="fa-solid fa-user-pen"></i> Editar perfil</a>
+            <a th:href="@{/auth/reset-password}"><i class="fa-solid fa-lock"></i> Cambiar contraseña</a>
+        </div>
+        <a th:href="@{/faq}"><i class="fa-regular fa-circle-question"></i> AYUDA</a>
+        <a th:href="@{/auth/logout}"><i class="fa-solid fa-right-from-bracket"></i> SALIR</a>
+    </div>
+
+    <!-- HEADER -->
+    <div class="portal-header">
+        <img src="/img/logoU.png" alt="Logo Uniremington">
+        <span class="portal-title">PORTAL ESPACIOS</span>
+    </div>
+
+    <!-- NAV -->
+    <div class="navbar-blocks">
+        <a class="nav-block selected" th:href="@{/menu}">
+            <i class="fa-solid fa-house"></i>
+            <div class="block-title">INICIO</div>
+            <div class="block-desc">Panel principal</div>
+        </a>
+        <a class="nav-block" th:href="@{/chatbot}">
+            <i class="fa-solid fa-robot"></i>
+            <div class="block-title">CHATBOT</div>
+            <div class="block-desc">Asistente virtual 24/7</div>
+        </a>
+        <a class="nav-block" th:href="@{/reservas}" th:if="${session.userRole != null and session.userRole == 'STUDENT'}">
+            <i class="fa-solid fa-calendar-check"></i>
+            <div class="block-title">RESERVAS</div>
+            <div class="block-desc">Solicitar espacios</div>
+        </a>
+        <a class="nav-block" th:href="@{/eventos}">
+            <i class="fa-solid fa-calendar-days"></i>
+            <div class="block-title">EVENTOS</div>
+            <div class="block-desc">Calendario universitario</div>
+        </a>
+        <a class="nav-block" th:href="@{/admin/lugares}" th:if="${session.userRole != null and (session.userRole == 'ADMIN_ESPACIOS' or session.userRole == 'ADMIN_TI')}">
+            <i class="fa-solid fa-building"></i>
+            <div class="block-title">LUGARES</div>
+            <div class="block-desc">Gestión de espacios</div>
+        </a>
+        <a class="nav-block" th:href="@{/admin/reservas}" th:if="${session.userRole != null and session.userRole == 'ADMIN_ESPACIOS'}">
+            <i class="fa-solid fa-tasks"></i>
+            <div class="block-title">RESERVAS</div>
+            <div class="block-desc">Aprobar solicitudes</div>
+        </a>
+        <a class="nav-block" th:href="@{/admin/eventos}" th:if="${session.userRole != null and session.userRole == 'ADMIN_ESPACIOS'}">
+            <i class="fa-solid fa-calendar-plus"></i>
+            <div class="block-title">EVENTOS</div>
+            <div class="block-desc">Crear actividades</div>
+        </a>
+        <a class="nav-block" th:href="@{/admin/usuarios}" th:if="${session.userRole != null and session.userRole == 'ADMIN_TI'}">
+            <i class="fa-solid fa-users-cog"></i>
+            <div class="block-title">USUARIOS</div>
+            <div class="block-desc">Gestión de cuentas</div>
+        </a>
+        <a class="nav-block" th:href="@{/perfil}">
+            <i class="fa-solid fa-user"></i>
+            <div class="block-title">PERFIL</div>
+            <div class="block-desc">Mis datos</div>
+        </a>
+        <a class="nav-block" th:href="@{/faq}">
+            <i class="fa-regular fa-circle-question"></i>
+            <div class="block-title">AYUDA</div>
+            <div class="block-desc">Preguntas frecuentes</div>
+        </a>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="main-content">
+        <h2>Panel principal</h2>
+        <p>
+            Bienvenido a tu portal universitario.<br>
+            Accede a nuestro <b>chatbot inteligente</b> para resolver tus dudas, reservar espacios, consultar eventos y más.
+        </p>
+        <!-- Debug: mostrar rol actual -->
+        <div th:if="${session.userRole}" style="margin: 10px 0; padding: 8px; background: #e3f2fd; border-radius: 4px; font-size: 0.9rem;">
+            <strong>Rol actual:</strong> <span th:text="${session.userRole}">N/A</span>
+        </div>
+        <img src="/img/chatbot.png" alt="Portal Image" style="max-width: 38%; border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.1);">
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        © Yoiser Agualimpia, Januar Diaz - 2025
+    </div>
 </body>
 </html>

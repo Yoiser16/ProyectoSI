@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Eventos y Calendario</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body {
+            background: #f5f7fa;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 36px auto 0 auto;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            padding: 36px 32px 28px 32px;
+            flex: 1;
+        }
+        .header {
+            margin-bottom: 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h2 {
+            color: #007bff;
+            margin: 0;
+            font-size: 1.6rem;
+        }
+        .view-toggle {
+            display: flex;
+            gap: 8px;
+        }
+        .btn {
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: #007bff;
+            color: #fff;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: #fff;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .calendar-container {
+            margin-bottom: 32px;
+        }
+        .calendar-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 0 8px;
+        }
+        .calendar-nav button {
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .calendar-nav h3 {
+            margin: 0;
+            color: #333;
+            font-size: 1.3rem;
+        }
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: #e0e0e0;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .calendar-header {
+            background: #007bff;
+            color: white;
+            padding: 12px 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .calendar-day {
+            background: white;
+            min-height: 100px;
+            padding: 8px 4px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .calendar-day:hover {
+            background: #f8f9ff;
+        }
+        .calendar-day.other-month {
+            background: #f8f9fa;
+            color: #adb5bd;
+        }
+        .calendar-day.today {
+            background: #e3f2fd;
+        }
+        .day-number {
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+        }
+        .event-item {
+            background: #007bff;
+            color: white;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            margin-bottom: 2px;
+            cursor: pointer;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .event-item.evento {
+            background: #28a745;
+        }
+        .event-item.reserva {
+            background: #ffc107;
+            color: #000;
+        }
+        .events-list {
+            margin-top: 24px;
+        }
+        .event-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .event-date {
+            color: #007bff;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+        .event-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        .event-details {
+            color: #6c757d;
+            font-size: 0.9rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .event-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 18px;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .footer {
+            width: 100%;
+            background: linear-gradient(90deg, #222, #444);
+            color: #fff;
+            text-align: center;
+            padding: 14px 0 10px 0;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            margin-top: 40px;
+        }
+        .empty-state {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            padding: 40px;
+        }
+        @media (max-width: 700px) {
+            .container { padding: 18px 5vw; }
+            .calendar { font-size: 0.8rem; }
+            .calendar-day { min-height: 80px; }
+            .header { flex-direction: column; gap: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2><i class="fa-solid fa-calendar"></i> Eventos y Calendario</h2>
+            <div class="view-toggle">
+                <button class="btn btn-primary" onclick="showCalendar()">
+                    <i class="fa-solid fa-calendar"></i> Vista Calendario
+                </button>
+                <button class="btn btn-secondary" onclick="showList()">
+                    <i class="fa-solid fa-list"></i> Vista Lista
+                </button>
+            </div>
+        </div>
+
+        <!-- Vista Calendario -->
+        <div id="calendar-view" class="calendar-container">
+            <div class="calendar-nav">
+                <button onclick="previousMonth()">
+                    <i class="fa-solid fa-chevron-left"></i> Anterior
+                </button>
+                <h3 id="calendar-title">Enero 2025</h3>
+                <button onclick="nextMonth()">
+                    Siguiente <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+            
+            <div class="calendar">
+                <div class="calendar-header">Dom</div>
+                <div class="calendar-header">Lun</div>
+                <div class="calendar-header">Mar</div>
+                <div class="calendar-header">Mié</div>
+                <div class="calendar-header">Jue</div>
+                <div class="calendar-header">Vie</div>
+                <div class="calendar-header">Sáb</div>
+                
+                <!-- Los días se generarán dinámicamente con JavaScript -->
+                <div id="calendar-days"></div>
+            </div>
+        </div>
+
+        <!-- Vista Lista -->
+        <div id="list-view" class="events-list" style="display: none;">
+            <div th:if="${eventos == null or eventos.isEmpty()}" class="empty-state">
+                <i class="fa-solid fa-calendar-xmark" style="font-size: 3rem; color: #6c757d; margin-bottom: 16px;"></i>
+                <p>No hay eventos programados</p>
+            </div>
+            
+            <div th:each="evento : ${eventos}" class="event-card">
+                <div class="event-date">
+                    <i class="fa-solid fa-calendar-day"></i>
+                    <span th:text="${#temporals.format(evento.fecha, 'dd/MM/yyyy')}">Fecha</span>
+                </div>
+                <div class="event-title" th:text="${evento.titulo}">Título del Evento</div>
+                <div class="event-details">
+                    <div class="event-detail-item">
+                        <i class="fa-solid fa-clock"></i>
+                        <span th:text="${#temporals.format(evento.horaInicio, 'HH:mm')} + ' - ' + ${#temporals.format(evento.horaFin, 'HH:mm')}">Horario</span>
+                    </div>
+                    <div class="event-detail-item">
+                        <i class="fa-solid fa-map-marker-alt"></i>
+                        <span th:text="${evento.lugar.nombre}">Lugar</span>
+                    </div>
+                    <div class="event-detail-item" th:if="${evento.descripcion}">
+                        <i class="fa-solid fa-info-circle"></i>
+                        <span th:text="${evento.descripcion}">Descripción</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <a class="back-link" th:href="@{/menu}">
+            <i class="fa-solid fa-arrow-left"></i> Volver al menú
+        </a>
+    </div>
+
+    <div class="footer">
+        © Yoiser Agualimpia, Januar Diaz - 2025
+    </div>
+
+    <script th:inline="javascript">
+        // Datos de eventos desde el servidor
+        const eventos = /*[[${eventos}]]*/ [];
+        
+        let currentDate = new Date();
+        const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                       'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+        function showCalendar() {
+            document.getElementById('calendar-view').style.display = 'block';
+            document.getElementById('list-view').style.display = 'none';
+            document.querySelector('.btn-primary').classList.add('btn-primary');
+            document.querySelector('.btn-secondary').classList.remove('btn-primary');
+        }
+
+        function showList() {
+            document.getElementById('calendar-view').style.display = 'none';
+            document.getElementById('list-view').style.display = 'block';
+            document.querySelector('.btn-secondary').classList.add('btn-primary');
+            document.querySelector('.btn-primary').classList.remove('btn-primary');
+        }
+
+        function generateCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            document.getElementById('calendar-title').textContent = months[month] + ' ' + year;
+            
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startDate = new Date(firstDay);
+            startDate.setDate(startDate.getDate() - firstDay.getDay());
+            
+            const calendarDays = document.getElementById('calendar-days');
+            calendarDays.innerHTML = '';
+            
+            for (let i = 0; i < 42; i++) {
+                const date = new Date(startDate);
+                date.setDate(startDate.getDate() + i);
+                
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                
+                if (date.getMonth() !== month) {
+                    dayElement.classList.add('other-month');
+                }
+                
+                if (isToday(date)) {
+                    dayElement.classList.add('today');
+                }
+                
+                dayElement.innerHTML = `
+                    <div class="day-number">${date.getDate()}</div>
+                    <div class="day-events" id="events-${date.getTime()}"></div>
+                `;
+                
+                calendarDays.appendChild(dayElement);
+                
+                // Agregar eventos para este día
+                addEventsToDay(date, dayElement);
+            }
+        }
+
+        function addEventsToDay(date, dayElement) {
+            const dayEvents = dayElement.querySelector('.day-events');
+            const dateStr = date.toISOString().split('T')[0];
+            
+            eventos.forEach(evento => {
+                const eventoDate = new Date(evento.fecha);
+                if (eventoDate.toISOString().split('T')[0] === dateStr) {
+                    const eventItem = document.createElement('div');
+                    eventItem.className = 'event-item evento';
+                    eventItem.textContent = evento.titulo;
+                    eventItem.title = `${evento.titulo} - ${evento.lugar.nombre}`;
+                    dayEvents.appendChild(eventItem);
+                }
+            });
+        }
+
+        function isToday(date) {
+            const today = new Date();
+            return date.getDate() === today.getDate() &&
+                   date.getMonth() === today.getMonth() &&
+                   date.getFullYear() === today.getFullYear();
+        }
+
+        function previousMonth() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            generateCalendar();
+        }
+
+        function nextMonth() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            generateCalendar();
+        }
+
+        // Inicializar calendario al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            generateCalendar();
+        });
+    </script>
+</body>
+</html>

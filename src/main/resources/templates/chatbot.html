@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chatbot Inteligente</title>
+    <style>
+        body { background: #f5f6fa; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; }
+        .chat-container {
+            max-width: 420px;
+            margin: 60px auto;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+            padding: 28px 22px 18px 22px;
+        }
+        .chat-header {
+            font-size: 1.3rem;
+            color: #007bff;
+            margin-bottom: 18px;
+            font-weight: 600;
+            text-align: center;
+        }
+        .chat-messages {
+            min-height: 180px;
+            max-height: 320px;
+            overflow-y: auto;
+            margin-bottom: 18px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px;
+            background: #f9fbff;
+        }
+        .message {
+            margin-bottom: 10px;
+            display: flex;
+        }
+        .message.user { justify-content: flex-end; }
+        .message.bot { justify-content: flex-start; }
+        .bubble {
+            padding: 10px 16px;
+            border-radius: 18px;
+            max-width: 80%;
+            font-size: 1.04rem;
+        }
+        .bubble.user {
+            background: linear-gradient(90deg, #007bff 60%, #00c6ff 100%);
+            color: #fff;
+        }
+        .bubble.bot {
+            background: #eaf4ff;
+            color: #222;
+        }
+        .chat-input {
+            display: flex;
+            gap: 8px;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #b0c4de;
+            font-size: 1rem;
+        }
+        .chat-input button {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 18px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .chat-input button:hover {
+            background: #0056b3;
+        }
+        .back-link {
+            display: block;
+            margin-bottom: 18px;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <a class="back-link" th:href="@{/menu}">&larr; Volver al menú</a>
+        <div class="chat-header">🤖 Chatbot Institucional</div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot"><div class="bubble bot">¡Hola! Soy tu asistente virtual. ¿En qué puedo ayudarte hoy?</div></div>
+        </div>
+        <form class="chat-input" id="chatForm" autocomplete="off">
+            <input type="text" id="userInput" placeholder="Escribe tu pregunta..." required autofocus>
+            <button type="submit">Enviar</button>
+        </form>
+    </div>
+    <script>
+        const chatForm = document.getElementById('chatForm');
+        const chatMessages = document.getElementById('chatMessages');
+        const userInput = document.getElementById('userInput');
+
+        chatForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const text = userInput.value.trim();
+            if (!text) return;
+            appendMessage('user', text);
+            userInput.value = '';
+            // Llamada AJAX al backend
+            const response = await fetch('/chatbot/message', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text })
+            });
+            const data = await response.json();
+            appendMessage('bot', data.reply);
+        });
+
+        function appendMessage(sender, text) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'message ' + sender;
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble ' + sender;
+            bubble.textContent = text;
+            msgDiv.appendChild(bubble);
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Preguntas Frecuentes - Ayuda</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body {
+            background: #f5f7fa;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .faq-header {
+            background: #fff;
+            padding: 28px 0 10px 0;
+            text-align: center;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .faq-header h1 {
+            color: #007bff;
+            font-size: 2rem;
+            margin-bottom: 6px;
+        }
+        .faq-header p {
+            color: #444;
+            font-size: 1.1rem;
+        }
+        .faq-container {
+            max-width: 700px;
+            margin: 36px auto 0 auto;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            padding: 36px 32px 28px 32px;
+        }
+        .faq-item {
+            margin-bottom: 28px;
+        }
+        .faq-question {
+            font-weight: 600;
+            color: #0056b3;
+            font-size: 1.13rem;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+        }
+        .faq-question i {
+            margin-right: 10px;
+            color: #007bff;
+        }
+        .faq-answer {
+            color: #333;
+            font-size: 1.03rem;
+            margin-left: 24px;
+        }
+        .faq-contact {
+            margin-top: 38px;
+            background: #e3f0ff;
+            border-radius: 10px;
+            padding: 18px 18px;
+            color: #0056b3;
+            font-size: 1.08rem;
+            text-align: center;
+        }
+        .back-link {
+            display: inline-block;
+            margin: 18px 0 0 0;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .footer {
+            width: 100%;
+            background: linear-gradient(90deg, #222, #444);
+            color: #fff;
+            text-align: center;
+            padding: 14px 0 10px 0;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            margin-top: auto;
+        }
+        @media (max-width: 700px) {
+            .faq-container { padding: 18px 5vw; }
+            .faq-header h1 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="faq-header">
+        <h1><i class="fa-regular fa-circle-question"></i> Preguntas Frecuentes</h1>
+        <p>Encuentra aquí respuestas rápidas sobre el uso del portal y los servicios universitarios.</p>
+    </div>
+    <div class="faq-container">
+        <div class="faq-item">
+            <div class="faq-question"><i class="fa-solid fa-robot"></i> ¿Qué es el Chatbot Institucional?</div>
+            <div class="faq-answer">
+                Es un asistente virtual disponible 24/7 que responde preguntas sobre horarios, reservas, eventos y servicios universitarios.
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question"><i class="fa-solid fa-calendar-check"></i> ¿Cómo puedo reservar un espacio?</div>
+            <div class="faq-answer">
+                Ingresa a la sección <b>Reservas</b>, selecciona el espacio y la fecha deseada, y sigue los pasos para confirmar tu reserva.
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question"><i class="fa-solid fa-gear"></i> ¿Quién puede cambiar el estado de los espacios?</div>
+            <div class="faq-answer">
+                Solo los usuarios con perfil de <b>Administrador</b> pueden modificar el estado (abierto/cerrado) y los horarios de los espacios.
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question"><i class="fa-solid fa-user-pen"></i> ¿Cómo actualizo mis datos o cambio mi contraseña?</div>
+            <div class="faq-answer">
+                Haz clic en tu nombre en la parte superior derecha y selecciona "Editar perfil" o "Cambiar contraseña".
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question"><i class="fa-solid fa-chart-bar"></i> ¿Para qué sirven las estadísticas?</div>
+            <div class="faq-answer">
+                Permiten a la institución analizar el uso de los espacios y servicios, ayudando a mejorar la gestión y la toma de decisiones.
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question"><i class="fa-solid fa-circle-info"></i> ¿Qué hago si tengo un problema o duda?</div>
+            <div class="faq-answer">
+                Puedes consultar primero al chatbot. Si no resuelve tu inquietud, contacta a soporte institucional usando los datos al final de esta página.
+            </div>
+        </div>
+        <div class="faq-contact">
+            <b>¿Necesitas más ayuda?</b><br>
+            Escribe a <a href="mailto:soporte@miremington.edu.co" style="color:#007bff;text-decoration:underline;">soporte@tuuniversidad.edu</a> o acércate a la oficina de Bienestar Institucional.
+        </div>
+        <a class="back-link" th:href="@{/menu}"><i class="fa-solid fa-arrow-left"></i> Volver al menú</a>
+    </div>
+    <div class="footer">
+        © Yoiser Agualimpia, Januar Diaz - 2025
+    </div>
+</body>
+</html>

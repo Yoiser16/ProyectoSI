@@ -16,6 +16,9 @@ public class User {
     private String email;
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    private Role rol; // STUDENT, ADMIN_ESPACIOS, ADMIN_TI
+
     // Constructor vacío
     public User() {
     }
@@ -58,5 +61,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Role getRol() {
+        return rol;
+    }
+
+    public void setRol(Role rol) {
+        this.rol = rol;
     }
 }

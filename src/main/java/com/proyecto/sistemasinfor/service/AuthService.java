@@ -4,6 +4,7 @@ import com.proyecto.sistemasinfor.dto.LoginRequest;
 import com.proyecto.sistemasinfor.dto.RegisterRequest;
 import com.proyecto.sistemasinfor.dto.PasswordResetRequest;
 import com.proyecto.sistemasinfor.model.User;
+import com.proyecto.sistemasinfor.model.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,6 +30,15 @@ public class AuthService {
     public User register(RegisterRequest request) {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         User user = new User(request.getNombre(), request.getEmail(), encodedPassword);
+        // Rol por defecto para nuevos registros
+        user.setRol(Role.STUDENT);
+        return userService.saveUser(user);
+    }
+
+    public User registerWithRole(RegisterRequest request, Role role) {
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        User user = new User(request.getNombre(), request.getEmail(), encodedPassword);
+        user.setRol(role != null ? role : Role.STUDENT);
         return userService.saveUser(user);
     }
 
