@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
+    <!-- Dark Mode CSS -->
+    <link rel="stylesheet" th:href="@{/dark-mode.css}">
     <meta charset="UTF-8">
     <title>Preguntas Frecuentes - Ayuda</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="/static/theme.css">
-    <script src="/static/theme.js"></script>
     <style>
         body {
-            background: var(--bg-primary);
+            background: #f5f7fa;
             font-family: 'Segoe UI', Arial, sans-serif;
             margin: 0;
             min-height: 100vh;
@@ -16,26 +16,26 @@
             flex-direction: column;
         }
         .faq-header {
-            background: var(--bg-card);
+            background: #fff;
             padding: 28px 0 10px 0;
             text-align: center;
-            border-bottom: 2px solid var(--border-color);
+            border-bottom: 2px solid #e0e0e0;
         }
         .faq-header h1 {
-            color: var(--nav-text);
+            color: #007bff;
             font-size: 2rem;
             margin-bottom: 6px;
         }
         .faq-header p {
-            color: var(--text-primary);
+            color: #444;
             font-size: 1.1rem;
         }
         .faq-container {
             max-width: 700px;
             margin: 36px auto 0 auto;
-            background: var(--bg-card);
+            background: #fff;
             border-radius: 18px;
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
             padding: 36px 32px 28px 32px;
         }
         .faq-item {
@@ -43,7 +43,7 @@
         }
         .faq-question {
             font-weight: 600;
-            color: var(--button-primary);
+            color: #0056b3;
             font-size: 1.13rem;
             margin-bottom: 6px;
             display: flex;
@@ -51,26 +51,26 @@
         }
         .faq-question i {
             margin-right: 10px;
-            color: var(--nav-text);
+            color: #007bff;
         }
         .faq-answer {
-            color: var(--text-primary);
+            color: #333;
             font-size: 1.03rem;
             margin-left: 24px;
         }
         .faq-contact {
             margin-top: 38px;
-            background: var(--accent-light);
+            background: #e3f0ff;
             border-radius: 10px;
             padding: 18px 18px;
-            color: var(--button-primary);
+            color: #0056b3;
             font-size: 1.08rem;
             text-align: center;
         }
         .back-link {
             display: inline-block;
             margin: 18px 0 0 0;
-            color: var(--button-primary);
+            color: #007bff;
             text-decoration: none;
             font-weight: 500;
             font-size: 1rem;
@@ -80,8 +80,8 @@
         }
         .footer {
             width: 100%;
-            background: var(--footer-bg);
-            color: var(--footer-text);
+            background: linear-gradient(90deg, #222, #444);
+            color: #fff;
             text-align: center;
             padding: 14px 0 10px 0;
             font-size: 0.95rem;
@@ -95,10 +95,6 @@
     </style>
 </head>
 <body>
-    <span class="theme-toggle-fixed" id="themeToggle">
-        <i class="fa-solid fa-moon"></i>
-    </span>
-
     <div class="faq-header">
         <h1><i class="fa-regular fa-circle-question"></i> Preguntas Frecuentes</h1>
         <p>Encuentra aquí respuestas rápidas sobre el uso del portal y los servicios universitarios.</p>
@@ -142,12 +138,14 @@
         </div>
         <div class="faq-contact">
             <b>¿Necesitas más ayuda?</b><br>
-            Escribe a <a href="mailto:soporte@miremington.edu.co" style="color:var(--button-primary);text-decoration:underline;">soporte@tuuniversidad.edu</a> o acércate a la oficina de Bienestar Institucional.
+            Escribe a <a href="mailto:soporte@miremington.edu.co" style="color:#007bff;text-decoration:underline;">soporte@tuuniversidad.edu</a> o acércate a la oficina de Bienestar Institucional.
         </div>
         <a class="back-link" th:href="@{/menu}"><i class="fa-solid fa-arrow-left"></i> Volver al menú</a>
     </div>
     <div class="footer">
         © Yoiser Agualimpia, Januar Diaz - 2025
     </div>
+    <!-- Dark Mode Script -->
+    <script th:src="@{/dark-mode.js}"></script>
 </body>
 </html>

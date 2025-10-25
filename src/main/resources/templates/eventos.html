@@ -4,40 +4,21 @@
     <meta charset="UTF-8">
     <title>Eventos y Calendario</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" th:href="@{/theme.css}">
-    <script th:src="@{/theme.js}"></script>
     <style>
         body {
-            background: var(--bg-primary);
+            background: #f5f7fa;
             font-family: 'Segoe UI', Arial, sans-serif;
             margin: 0;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
-        .theme-toggle-fixed {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 999;
-            width: 48px;
-            height: 48px;
-            background: var(--bg-card);
-            border: 2px solid var(--border-color);
-            border-radius: 50%;
-            display: grid;
-            place-items: center;
-            cursor: pointer;
-            font-size: 1.3rem;
-            color: var(--nav-text);
-            box-shadow: var(--shadow-sm);
-        }
         .container {
             max-width: 1200px;
             margin: 36px auto 0 auto;
-            background: var(--bg-card);
+            background: #fff;
             border-radius: 18px;
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
             padding: 36px 32px 28px 32px;
             flex: 1;
         }
@@ -48,7 +29,7 @@
             align-items: center;
         }
         .header h2 {
-            color: var(--nav-text);
+            color: #007bff;
             margin: 0;
             font-size: 1.6rem;
         }
@@ -67,12 +48,12 @@
             transition: all 0.2s;
         }
         .btn-primary {
-            background: var(--button-primary);
-            color: var(--button-text);
+            background: #007bff;
+            color: #fff;
         }
         .btn-secondary {
-            background: var(--text-muted);
-            color: var(--button-text);
+            background: #6c757d;
+            color: #fff;
         }
         .btn:hover {
             opacity: 0.9;
@@ -88,8 +69,8 @@
             padding: 0 8px;
         }
         .calendar-nav button {
-            background: var(--button-primary);
-            color: var(--button-text);
+            background: #007bff;
+            color: white;
             border: none;
             border-radius: 6px;
             padding: 8px 12px;
@@ -98,28 +79,28 @@
         }
         .calendar-nav h3 {
             margin: 0;
-            color: var(--text-primary);
+            color: #333;
             font-size: 1.3rem;
         }
         .calendar {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 1px;
-            background: var(--border-color);
-            border: 1px solid var(--border-color);
+            background: #e0e0e0;
+            border: 1px solid #e0e0e0;
             border-radius: 8px;
             overflow: hidden;
         }
         .calendar-header {
-            background: var(--button-primary);
-            color: var(--button-text);
+            background: #007bff;
+            color: white;
             padding: 12px 8px;
             text-align: center;
             font-weight: 600;
             font-size: 0.9rem;
         }
         .calendar-day {
-            background: var(--bg-card);
+            background: white;
             min-height: 100px;
             padding: 8px 4px;
             position: relative;
@@ -127,14 +108,14 @@
             transition: background 0.2s;
         }
         .calendar-day:hover {
-            background: var(--table-row-hover);
+            background: #f8f9ff;
         }
         .calendar-day.other-month {
-            background: var(--table-header-bg);
-            color: var(--text-muted);
+            background: #f8f9fa;
+            color: #adb5bd;
         }
         .calendar-day.today {
-            background: var(--accent-light);
+            background: #e3f2fd;
         }
         .day-number {
             font-weight: 600;
@@ -142,8 +123,8 @@
             font-size: 0.9rem;
         }
         .event-item {
-            background: var(--button-primary);
-            color: var(--button-text);
+            background: #007bff;
+            color: white;
             padding: 2px 4px;
             border-radius: 3px;
             font-size: 0.75rem;
@@ -154,25 +135,25 @@
             white-space: nowrap;
         }
         .event-item.evento {
-            background: var(--success);
+            background: #28a745;
         }
         .event-item.reserva {
-            background: var(--warning);
-            color: var(--text-primary);
+            background: #ffc107;
+            color: #000;
         }
         .events-list {
             margin-top: 24px;
         }
         .event-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
+            background: #fff;
+            border: 1px solid #e0e0e0;
             border-radius: 8px;
             padding: 16px;
             margin-bottom: 16px;
-            box-shadow: var(--shadow-sm);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
         .event-date {
-            color: var(--button-primary);
+            color: #007bff;
             font-weight: 600;
             font-size: 0.9rem;
             margin-bottom: 8px;
@@ -181,10 +162,10 @@
             font-size: 1.1rem;
             font-weight: 600;
             margin-bottom: 8px;
-            color: var(--text-primary);
+            color: #333;
         }
         .event-details {
-            color: var(--text-muted);
+            color: #6c757d;
             font-size: 0.9rem;
             display: flex;
             flex-wrap: wrap;
@@ -198,7 +179,7 @@
         .back-link {
             display: inline-block;
             margin-top: 18px;
-            color: var(--button-primary);
+            color: #007bff;
             text-decoration: none;
             font-weight: 500;
         }
@@ -207,8 +188,8 @@
         }
         .footer {
             width: 100%;
-            background: var(--footer-bg);
-            color: var(--footer-text);
+            background: linear-gradient(90deg, #222, #444);
+            color: #fff;
             text-align: center;
             padding: 14px 0 10px 0;
             font-size: 0.95rem;
@@ -217,7 +198,7 @@
         }
         .empty-state {
             text-align: center;
-            color: var(--text-muted);
+            color: #6c757d;
             font-style: italic;
             padding: 40px;
         }
@@ -230,9 +211,6 @@
     </style>
 </head>
 <body>
-    <span class="theme-toggle-fixed" id="themeToggle" title="Cambiar tema">
-        <i class="fa-solid fa-moon"></i>
-    </span>
     <div class="container">
         <div class="header">
             <h2><i class="fa-solid fa-calendar"></i> Eventos y Calendario</h2>
@@ -275,7 +253,7 @@
         <!-- Vista Lista -->
         <div id="list-view" class="events-list" style="display: none;">
             <div th:if="${eventos == null or eventos.isEmpty()}" class="empty-state">
-                <i class="fa-solid fa-calendar-xmark" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 16px;"></i>
+                <i class="fa-solid fa-calendar-xmark" style="font-size: 3rem; color: #6c757d; margin-bottom: 16px;"></i>
                 <p>No hay eventos programados</p>
             </div>
             
