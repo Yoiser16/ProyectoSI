@@ -28,16 +28,18 @@ public class BackupNotificationScheduler {
     public void sendWeeklyBackupReminder() {
         if (!notificationsEnabled) return;
         
-        // Enviar notificación a todos los usuarios registrados
+        // Enviar notificación solo a usuarios que aceptaron recibir correos de marketing
         userRepository.findAll().forEach(user -> {
-            try {
-                mailService.sendEmail(
-                    user.getEmail(), 
-                    "📅 Aviso de Copia de Seguridad", 
-                    notifyMessage
-                );
-            } catch (Exception ignored) {
-                // En un sistema real, loggear el error
+            if (Boolean.TRUE.equals(user.getMarketingEmailsAccepted())) {
+                try {
+                    mailService.sendEmail(
+                        user.getEmail(), 
+                        "📅 Aviso de Copia de Seguridad", 
+                        notifyMessage
+                    );
+                } catch (Exception ignored) {
+                    // En un sistema real, loggear el error
+                }
             }
         });
     }

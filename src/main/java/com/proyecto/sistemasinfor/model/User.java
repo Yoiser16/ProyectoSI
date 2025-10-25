@@ -1,6 +1,7 @@
 package com.proyecto.sistemasinfor.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -18,6 +19,21 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private Role rol; // STUDENT, ADMIN_ESPACIOS, ADMIN_TI
+
+    // Campos para control de bloqueo de cuenta
+    private Integer failedAttempts = 0;
+    private Boolean accountLocked = false;
+    private LocalDateTime lockTime;
+    private String unlockToken; // Token para desbloquear cuenta
+
+    // Campos para consentimiento y tratamiento de datos (GDPR/LOPD)
+    @Column(nullable = true)
+    private Boolean privacyPolicyAccepted = false; // Obligatorio - Política de privacidad
+    
+    @Column(nullable = true)
+    private Boolean marketingEmailsAccepted = false; // Opcional - Correos promocionales/recomendaciones
+    
+    private LocalDateTime consentDate; // Fecha de aceptación del consentimiento
 
     // Constructor vacío
     public User() {
@@ -69,5 +85,61 @@ public class User {
 
     public void setRol(Role rol) {
         this.rol = rol;
+    }
+
+    public Integer getFailedAttempts() {
+        return failedAttempts;
+    }
+
+    public void setFailedAttempts(Integer failedAttempts) {
+        this.failedAttempts = failedAttempts;
+    }
+
+    public Boolean getAccountLocked() {
+        return accountLocked;
+    }
+
+    public void setAccountLocked(Boolean accountLocked) {
+        this.accountLocked = accountLocked;
+    }
+
+    public LocalDateTime getLockTime() {
+        return lockTime;
+    }
+
+    public void setLockTime(LocalDateTime lockTime) {
+        this.lockTime = lockTime;
+    }
+
+    public String getUnlockToken() {
+        return unlockToken;
+    }
+
+    public void setUnlockToken(String unlockToken) {
+        this.unlockToken = unlockToken;
+    }
+
+    public Boolean getPrivacyPolicyAccepted() {
+        return privacyPolicyAccepted;
+    }
+
+    public void setPrivacyPolicyAccepted(Boolean privacyPolicyAccepted) {
+        this.privacyPolicyAccepted = privacyPolicyAccepted;
+    }
+
+    public Boolean getMarketingEmailsAccepted() {
+        return marketingEmailsAccepted;
+    }
+
+    public void setMarketingEmailsAccepted(Boolean marketingEmailsAccepted) {
+        this.marketingEmailsAccepted = marketingEmailsAccepted;
+    }
+
+    public LocalDateTime getConsentDate() {
+        return consentDate;
+    }
+
+    public void setConsentDate(LocalDateTime consentDate) {
+        this.consentDate = consentDate;
     }
 }

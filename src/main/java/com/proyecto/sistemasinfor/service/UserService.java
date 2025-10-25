@@ -27,4 +27,8 @@ public class UserService {
     public void actualizarUsuario(User usuario) {
         userRepository.save(usuario);
     }
+
+    public Optional<User> findByUnlockToken(String unlockToken) {
+        return userRepository.findByUnlockToken(unlockToken);
+    }
 }

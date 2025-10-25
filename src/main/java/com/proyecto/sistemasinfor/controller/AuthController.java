@@ -68,6 +68,15 @@ public class AuthController {
         request.setEmail(email);
         request.setPassword(password);
 
+        // Verificar si la cuenta está bloqueada antes de intentar login
+        Optional<User> userCheck = authService.findByEmail(email);
+        if (userCheck.isPresent() && Boolean.TRUE.equals(userCheck.get().getAccountLocked())) {
+            model.addAttribute("error", "🔒 Tu cuenta ha sido bloqueada por múltiples intentos fallidos. Revisa tu correo para desbloquearla.");
+            Object rolSel = session.getAttribute("rolSeleccionado");
+            model.addAttribute("rolSeleccionado", rolSel != null ? rolSel.toString() : "");
+            return "login";
+        }
+
         Optional<User> userOpt = authService.login(request);
         if (userOpt.isPresent()) {
             User usuario = userOpt.get();
@@ -82,9 +91,23 @@ public class AuthController {
             session.setAttribute("nombreUsuario", usuario.getNombre());
             session.setAttribute("rol", usuario.getRol());
             session.setAttribute("userRole", usuario.getRol().name()); // Agregar para compatibilidad con las vistas
+            
+            // Verificar si ha aceptado el consentimiento de privacidad
+            if (usuario.getPrivacyPolicyAccepted() == null || !usuario.getPrivacyPolicyAccepted()) {
+                return "redirect:/auth/consentimiento";
+            }
+            
             return "redirect:/menu";
         }
-        model.addAttribute("error", "Credenciales inválidas");
+        
+        // Login fallido - mostrar intentos restantes
+        int remainingAttempts = authService.getRemainingAttempts(email);
+        if (remainingAttempts > 0) {
+            model.addAttribute("error", "⚠️ Credenciales inválidas. Te quedan " + remainingAttempts + " intento(s) antes de que tu cuenta sea bloqueada.");
+        } else {
+            model.addAttribute("error", "🔒 Tu cuenta ha sido bloqueada. Revisa tu correo para desbloquearla.");
+        }
+        
         model.addAttribute("rolSeleccionado", String.valueOf(session.getAttribute("rolSeleccionado")));
         return "login";
     }
@@ -274,5 +297,63 @@ public class AuthController {
         }
         model.addAttribute("usuario", usuario);
         return "perfil";
+    }
+
+    // Desbloquear cuenta con token
+    @GetMapping("/unlock-account")
+    public String unlockAccount(@RequestParam("token") String token, Model model) {
+        boolean success = authService.unlockAccount(token);
+        
+        if (success) {
+            model.addAttribute("mensaje", "Tu cuenta ha sido desbloqueada exitosamente. Ya puedes iniciar sesión.");
+            model.addAttribute("tipo", "success");
+        } else {
+            model.addAttribute("mensaje", "El enlace de desbloqueo es inválido o ha expirado. Por favor contacta al soporte.");
+            model.addAttribute("tipo", "error");
+        }
+        
+        return "unlock-account-result";
+    }
+
+    // Mostrar página de consentimiento
+    @GetMapping("/consentimiento")
+    public String mostrarConsentimiento(HttpSession session, Model model) {
+        User usuario = (User) session.getAttribute("usuario");
+        if (usuario == null) {
+            return "redirect:/auth/login";
+        }
+        return "consentimiento";
+    }
+
+    // Guardar consentimiento del usuario
+    @PostMapping("/guardar-consentimiento")
+    public String guardarConsentimiento(
+            @RequestParam(name = "privacyPolicyAccepted", required = false) String privacyAccepted,
+            @RequestParam(name = "marketingEmailsAccepted", required = false) String marketingAccepted,
+            HttpSession session,
+            Model model) {
+        
+        User usuario = (User) session.getAttribute("usuario");
+        if (usuario == null) {
+            return "redirect:/auth/login";
+        }
+
+        // Validar que aceptó la política de privacidad (obligatorio)
+        if (privacyAccepted == null || !privacyAccepted.equals("on")) {
+            model.addAttribute("mensaje", "Debes aceptar la Política de Privacidad para continuar usando el sistema.");
+            return "consentimiento";
+        }
+
+        // Actualizar preferencias del usuario
+        usuario.setPrivacyPolicyAccepted(true);
+        usuario.setMarketingEmailsAccepted(marketingAccepted != null && marketingAccepted.equals("true"));
+        usuario.setConsentDate(java.time.LocalDateTime.now());
+        
+        userService.saveUser(usuario);
+        
+        // Actualizar usuario en sesión
+        session.setAttribute("usuario", usuario);
+        
+        return "redirect:/menu";
     }
 }

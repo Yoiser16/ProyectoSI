@@ -25,10 +25,13 @@ public class FitnessRecommendationScheduler {
     public void sendRecommendationsWeekly() {
         if (!enabled) return;
         userRepository.findAll().forEach(user -> {
-            try {
-                mailService.sendFitnessRecommendations(user);
-            } catch (Exception ignored) {
-                // Log en un sistema real
+            // Solo enviar a usuarios que aceptaron recibir correos de marketing
+            if (Boolean.TRUE.equals(user.getMarketingEmailsAccepted())) {
+                try {
+                    mailService.sendFitnessRecommendations(user);
+                } catch (Exception ignored) {
+                    // Log en un sistema real
+                }
             }
         });
     }

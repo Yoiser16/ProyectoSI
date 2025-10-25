@@ -1,4 +1,3 @@
-// filepath: d:\Descargas\sistemasinfor\src\main\java\com\proyecto\sistemasinfor\repository\UserRepository.java
 package com.proyecto.sistemasinfor.repository;
 
 import com.proyecto.sistemasinfor.model.User;
@@ -7,4 +6,5 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
+    Optional<User> findByUnlockToken(String unlockToken);
 }
