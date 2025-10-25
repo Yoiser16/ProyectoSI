@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <title>Administrar Eventos</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="/static/theme.css">
-    <script src="/static/theme.js"></script>
     <style>
         body {
-            background: var(--bg-primary);
+            background: #f5f7fa;
             font-family: 'Segoe UI', Arial, sans-serif;
             margin: 0;
             min-height: 100vh;
@@ -18,9 +16,9 @@
         .container {
             max-width: 1200px;
             margin: 36px auto 0 auto;
-            background: var(--bg-card);
+            background: #fff;
             border-radius: 18px;
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
             padding: 36px 32px 28px 32px;
             flex: 1;
         }
@@ -31,7 +29,7 @@
             align-items: center;
         }
         .header h2 {
-            color: var(--nav-text);
+            color: #007bff;
             margin: 0;
             font-size: 1.6rem;
         }
@@ -49,33 +47,33 @@
             gap: 6px;
         }
         .btn-primary {
-            background: var(--button-primary);
-            color: var(--button-text);
+            background: #007bff;
+            color: #fff;
         }
         .btn-success {
-            background: var(--success);
-            color: var(--button-text);
+            background: #28a745;
+            color: #fff;
         }
         .btn-warning {
-            background: var(--warning);
-            color: var(--text-primary);
+            background: #ffc107;
+            color: #000;
         }
         .btn-danger {
-            background: var(--danger);
-            color: var(--button-text);
+            background: #dc3545;
+            color: #fff;
         }
         .btn:hover {
             opacity: 0.9;
         }
         .form-section {
-            background: var(--accent-light);
+            background: #f8f9ff;
             padding: 24px;
             border-radius: 12px;
             margin-bottom: 32px;
-            border: 1px solid var(--border-color);
+            border: 1px solid #e3f2fd;
         }
         .form-section h3 {
-            color: var(--button-primary);
+            color: #0056b3;
             margin: 0 0 20px 0;
             font-size: 1.2rem;
         }
@@ -92,15 +90,13 @@
         .form-group label {
             margin-bottom: 6px;
             font-weight: 600;
-            color: var(--text-primary);
+            color: #495057;
         }
         .form-group input,
         .form-group select,
         .form-group textarea {
             padding: 10px;
-            border: 1px solid var(--input-border);
-            background: var(--input-bg);
-            color: var(--text-primary);
+            border: 1px solid #ced4da;
             border-radius: 6px;
             font-size: 0.95rem;
         }
@@ -116,16 +112,15 @@
         .table th, .table td {
             padding: 12px;
             text-align: left;
-            border-bottom: 1px solid var(--border-color);
-            color: var(--text-primary);
+            border-bottom: 1px solid #e0e0e0;
         }
         .table th {
-            background: var(--table-header-bg);
-            color: var(--button-primary);
+            background: #f8f9ff;
+            color: #0056b3;
             font-weight: 600;
         }
         .table tr:hover {
-            background: var(--table-row-hover);
+            background: #f8f9ff;
         }
         .action-buttons {
             display: flex;
@@ -138,19 +133,19 @@
             border: 1px solid transparent;
         }
         .alert-success {
-            background: var(--success-light);
-            color: var(--success-dark);
-            border-color: var(--success);
+            background: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
         }
         .alert-danger {
-            background: var(--danger-light);
-            color: var(--danger-dark);
-            border-color: var(--danger);
+            background: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
         }
         .back-link {
             display: inline-block;
             margin-top: 18px;
-            color: var(--button-primary);
+            color: #007bff;
             text-decoration: none;
             font-weight: 500;
         }
@@ -159,8 +154,8 @@
         }
         .footer {
             width: 100%;
-            background: var(--footer-bg);
-            color: var(--footer-text);
+            background: linear-gradient(90deg, #222, #444);
+            color: #fff;
             text-align: center;
             padding: 14px 0 10px 0;
             font-size: 0.95rem;
@@ -169,7 +164,7 @@
         }
         .empty-state {
             text-align: center;
-            color: var(--text-muted);
+            color: #6c757d;
             font-style: italic;
             padding: 40px;
         }
@@ -182,10 +177,6 @@
     </style>
 </head>
 <body>
-    <span class="theme-toggle-fixed" id="themeToggle">
-        <i class="fa-solid fa-moon"></i>
-    </span>
-
     <div class="container">
         <div class="header">
             <h2><i class="fa-solid fa-calendar-plus"></i> Administrar Eventos</h2>
@@ -248,8 +239,8 @@
                         </div>
                         
                         <!-- Formulario para crear nuevo lugar -->
-                        <div id="nuevo-lugar-form" style="display: none; margin-top: 12px; padding: 12px; background: var(--table-header-bg); border-radius: 6px; border: 1px solid var(--border-color);">
-                            <h6 style="margin-bottom: 12px; color: var(--text-primary);">
+                        <div id="nuevo-lugar-form" style="display: none; margin-top: 12px; padding: 12px; background: #f8f9fa; border-radius: 6px; border: 1px solid #dee2e6;">
+                            <h6 style="margin-bottom: 12px; color: #495057;">
                                 <i class="fa-solid fa-building"></i> Crear Nuevo Lugar
                             </h6>
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
@@ -286,12 +277,12 @@
 
         <!-- Lista de eventos -->
         <div class="events-section">
-            <h3 style="color: var(--button-primary); margin-bottom: 20px;">
+            <h3 style="color: #0056b3; margin-bottom: 20px;">
                 <i class="fa-solid fa-list"></i> Eventos Registrados
             </h3>
             
             <div th:if="${eventos == null or eventos.isEmpty()}" class="empty-state">
-                <i class="fa-solid fa-calendar-xmark" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 16px;"></i>
+                <i class="fa-solid fa-calendar-xmark" style="font-size: 3rem; color: #6c757d; margin-bottom: 16px;"></i>
                 <p>No hay eventos registrados</p>
                 <p>Haz clic en "Nuevo Evento" para crear el primer evento</p>
             </div>
@@ -319,7 +310,7 @@
                         <td th:text="${evento.lugar != null ? evento.lugar.nombre : 'Sin lugar'}">Lugar</td>
                         <td>
                             <span th:if="${evento.descripcion}" th:text="${#strings.length(evento.descripcion) > 50 ? #strings.substring(evento.descripcion, 0, 50) + '...' : evento.descripcion}">Descripción</span>
-                            <span th:unless="${evento.descripcion}" style="color: var(--text-muted); font-style: italic;">Sin descripción</span>
+                            <span th:unless="${evento.descripcion}" style="color: #6c757d; font-style: italic;">Sin descripción</span>
                         </td>
                         <td>
                             <div class="action-buttons">
