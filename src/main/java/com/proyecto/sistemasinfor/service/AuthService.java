@@ -27,8 +27,6 @@ public class AuthService {
     @org.springframework.beans.factory.annotation.Value("${auth.max-attempts:3}")
     private int maxFailedAttempts;
 
-    @org.springframework.beans.factory.annotation.Value("${auth.lock-duration-minutes:0}")
-    private int lockDurationMinutes; // 0 = bloqueo hasta enlace de desbloqueo
 
     public Optional<User> login(LoginRequest request) {
         Optional<User> userOpt = userService.findByEmail(request.getEmail());
@@ -39,23 +37,9 @@ public class AuthService {
 
         User user = userOpt.get();
 
-        // Verificar si la cuenta está bloqueada y si corresponde auto-desbloqueo por tiempo
+        // Verificar si la cuenta está bloqueada (solo desbloqueo vía enlace por correo)
         if (Boolean.TRUE.equals(user.getAccountLocked())) {
-            if (lockDurationMinutes > 0 && user.getLockTime() != null) {
-                LocalDateTime unlockTime = user.getLockTime().plusMinutes(lockDurationMinutes);
-                if (unlockTime.isBefore(LocalDateTime.now())) {
-                    // Auto-desbloquear por expiración del periodo de bloqueo
-                    user.setAccountLocked(false);
-                    user.setFailedAttempts(0);
-                    user.setLockTime(null);
-                    user.setUnlockToken(null);
-                    userService.saveUser(user);
-                } else {
-                    return Optional.empty();
-                }
-            } else {
-                return Optional.empty();
-            }
+            return Optional.empty();
         }
 
         // Verificar contraseña
