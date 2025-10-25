@@ -8,32 +8,44 @@
     --bg-secondary: #ffffff;
     --bg-card: #fff;
     --bg-hero: linear-gradient(135deg, #e9f3ff 0%, #ffffff 55%, #f5fbff 100%);
-    --text-primary: #0d1b3a;
+    --text-primary: #333;
     --text-secondary: #444;
-    --text-muted: #5b6b84;
-    --border-color: #e6ebf1;
+    --text-muted: #6c757d;
+    --border-color: #e0e0e0;
     --shadow-sm: 0 2px 10px rgba(0,0,0,0.1);
-    --shadow-md: 0 10px 35px rgba(0,0,0,0.08);
+    --shadow-md: 0 8px 32px rgba(0,0,0,0.08);
     --topbar-bg: linear-gradient(90deg, #505050, #505050);
     --topbar-text: #fff;
     --nav-bg: #f0f6ff;
-    --nav-text: #0056b3;
+    --nav-text: #007bff;
     --nav-hover: linear-gradient(135deg, #007bff, #0056b3);
     --footer-bg: linear-gradient(90deg, #222, #444);
+    --footer-text: #fff;
     --dropdown-bg: #fff;
     --dropdown-border: #e0e6ed;
     --card-border: #e7eefb;
-    --input-bg: #ffffff;
-    --input-border: #d1d9e6;
+    --input-bg: #f7faff;
+    --input-border: #ced4da;
     --button-primary: #007bff;
-    --button-primary-hover: #0056b3;
+    --button-hover: #0056b3;
+    --button-text: #fff;
     --button-danger: #dc3545;
     --button-success: #28a745;
     --chat-user-bg: #007bff;
     --chat-bot-bg: #e8f4ff;
     --chat-bot-text: #333;
     --table-header-bg: #f8f9fa;
-    --table-row-hover: #f5f5f5;
+    --table-row-hover: #f8f9ff;
+    --accent-light: #e3f2fd;
+    --success: #28a745;
+    --success-light: #d4edda;
+    --success-dark: #155724;
+    --danger: #dc3545;
+    --danger-light: #f8d7da;
+    --danger-dark: #721c24;
+    --warning: #ffc107;
+    --warning-light: #fff3cd;
+    --warning-dark: #856404;
 }
 
 [data-theme="dark"] {
@@ -54,13 +66,15 @@
     --nav-text: #58a6ff;
     --nav-hover: linear-gradient(135deg, #1f6feb, #0969da);
     --footer-bg: linear-gradient(90deg, #010409, #0d1117);
+    --footer-text: #e6edf3;
     --dropdown-bg: #1c2128;
     --dropdown-border: #30363d;
     --card-border: #30363d;
     --input-bg: #0d1117;
     --input-border: #30363d;
     --button-primary: #1f6feb;
-    --button-primary-hover: #1a5dd8;
+    --button-hover: #1a5dd8;
+    --button-text: #fff;
     --button-danger: #da3633;
     --button-success: #238636;
     --chat-user-bg: #1f6feb;
@@ -68,6 +82,16 @@
     --chat-bot-text: #e6edf3;
     --table-header-bg: #161b22;
     --table-row-hover: #21262d;
+    --accent-light: #1c2f47;
+    --success: #238636;
+    --success-light: #0f2e1c;
+    --success-dark: #3fb950;
+    --danger: #da3633;
+    --danger-light: #3d1415;
+    --danger-dark: #ff7b72;
+    --warning: #d29922;
+    --warning-light: #3d2e00;
+    --warning-dark: #f0b72f;
 }
 
 /* Transiciones suaves para cambio de tema */
