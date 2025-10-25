@@ -138,27 +138,62 @@
             opacity: 0.9;
         }
 
-        /* ==== MAIN CONTENT ==== */
+        /* ==== MAIN CONTENT (Hero) ==== */
         .main-content {
-            max-width: 700px;
-            margin: 50px auto;
+            max-width: 1100px;
+            margin: 42px auto;
             background: #fff;
             border-radius: 20px;
             box-shadow: 0 10px 35px rgba(0,0,0,0.08);
-            padding: 40px 36px;
-            text-align: center;
-            flex: 1;
+            padding: 0;
+            text-align: left;
+            overflow: hidden;
         }
-        .main-content h2 {
-            color: #0056b3;
-            margin-bottom: 12px;
-            font-size: 1.9rem;
+        .hero-card {
+            position: relative;
+            background: linear-gradient(135deg, #e9f3ff 0%, #ffffff 55%, #f5fbff 100%);
         }
-        .main-content p {
-            color: #444;
-            margin-bottom: 30px;
-            font-size: 1.05rem;
-            line-height: 1.6;
+        .hero-card::before,
+        .hero-card::after {
+            content: '';
+            position: absolute;
+            pointer-events: none;
+            border-radius: 50%;
+            filter: blur(35px);
+            opacity: 0.6;
+        }
+        .hero-card::before { width: 220px; height: 220px; background: #cfe6ff; top: -60px; right: -60px; }
+        .hero-card::after  { width: 180px; height: 180px; background: #d8ffee; bottom: -60px; left: -40px; }
+
+        .hero-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 10px; align-items: center; padding: 36px; }
+        .hero-copy h2 { color: #0d47a1; font-size: 2.1rem; margin: 8px 0 10px; letter-spacing: .3px; }
+        .hero-copy p { color: #2f3b52; font-size: 1.05rem; line-height: 1.7; margin-bottom: 22px; }
+
+        .role-chip {
+            display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px;
+            background: #e8f1ff; color: #0d47a1; border: 1px solid #cfe2ff; border-radius: 999px;
+            font-weight: 600; font-size: .92rem; box-shadow: 0 2px 8px rgba(13,71,161,.08);
+        }
+        .role-chip i { color: #0d47a1; }
+
+    .info-cards { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:14px; margin-top: 14px; }
+    .info-card { background:#fff; border:1px solid #e7eefb; border-radius:14px; padding:16px; box-shadow: 0 6px 18px rgba(0,0,0,.05); display:flex; align-items:center; gap:12px; }
+    .info-card .icn { width:40px; height:40px; display:grid; place-items:center; border-radius:12px; }
+    .icn.blue { background:#e8f1ff; color:#0d47a1; }
+    .icn.green { background:#eafff2; color:#008f4f; }
+    .icn.purple { background:#f2e9ff; color:#6f42c1; }
+    .info-card .meta { line-height:1.2; }
+    .meta .label { font-size:.82rem; color:#5b6b84; }
+    .meta .value { font-weight:800; color:#0d1b3a; }
+
+        .hero-visual { display:flex; justify-content:center; }
+        .img-wrap { position: relative; }
+        .img-wrap img { max-width: 360px; border-radius: 18px; box-shadow: 0 14px 35px rgba(0,0,0,.1); animation: float 6s ease-in-out infinite; }
+        .glow { position:absolute; inset:auto auto -16px 50%; transform: translateX(-50%); width: 80%; height: 22px; background: radial-gradient(50% 50% at 50% 50%, rgba(13,110,253,.25) 0%, rgba(13,110,253,0) 70%); filter: blur(6px); }
+
+        @keyframes float {
+            0%,100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
         }
 
         /* ==== FOOTER ==== */
@@ -177,6 +212,11 @@
         @media (max-width: 900px) {
             .navbar-blocks { gap: 10px; padding: 10px 4vw; }
             .portal-header { padding: 14px 4vw; }
+        }
+        @media (max-width: 900px) {
+            .hero-grid { grid-template-columns: 1fr; padding: 28px; }
+            .hero-visual { order: -1; margin-bottom: 8px; }
+            .img-wrap img { max-width: 74vw; }
         }
         @media (max-width: 700px) {
             .portal-header {
@@ -203,10 +243,7 @@
                 margin-bottom: 2px;
                 padding: 18px 8px 12px 8px;
             }
-            .main-content {
-                padding: 18px 5vw;
-                margin: 18px auto;
-            }
+            .main-content { margin: 18px 2vw; }
         }
         @media (max-width: 480px) {
             .topbar {
@@ -221,9 +258,7 @@
                 top: 44px;
                 min-width: 150px;
             }
-            .main-content {
-                padding: 12px 2vw;
-            }
+            .main-content { margin: 14px 2vw; }
             .footer {
                 font-size: 0.85rem;
                 padding: 10px 0;
@@ -328,17 +363,76 @@
     </div>
 
     <!-- CONTENT -->
-    <div class="main-content">
-        <h2>Panel principal</h2>
-        <p>
-            Bienvenido a tu portal universitario.<br>
-            Accede a nuestro <b>chatbot inteligente</b> para resolver tus dudas, reservar espacios, consultar eventos y más.
-        </p>
-        <!-- Debug: mostrar rol actual -->
-        <div th:if="${session.userRole}" style="margin: 10px 0; padding: 8px; background: #e3f2fd; border-radius: 4px; font-size: 0.9rem;">
-            <strong>Rol actual:</strong> <span th:text="${session.userRole}">N/A</span>
+    <div class="main-content hero-card">
+        <div class="hero-grid">
+            <div class="hero-copy">
+                <div class="role-chip" th:if="${session.userRole}">
+                    <i class="fa-regular fa-id-badge"></i>
+                    <span>Rol:</span>
+                    <span th:switch="${session.userRole}">
+                        <span th:case="'ADMIN_ESPACIOS'">Administrador de Espacios</span>
+                        <span th:case="'ADMIN_TI'">Administrador de TI</span>
+                        <span th:case="'STUDENT'">Estudiante</span>
+                        <span th:case="'TEACHER'">Docente</span>
+                        <span th:case="*">Usuario</span>
+                    </span>
+                </div>
+                <h2>Panel principal</h2>
+                <p>
+                    Bienvenido a tu portal universitario. Accede a nuestro <b>chatbot inteligente</b>
+                    para resolver tus dudas, reservar espacios, consultar eventos y más.
+                </p>
+                <div class="info-cards">
+                    <!-- Próximo evento -->
+                    <div class="info-card" th:if="${nextEvent}">
+                        <div class="icn blue"><i class="fa-solid fa-bell"></i></div>
+                        <div class="meta">
+                            <div class="label">Próximo evento</div>
+                            <div class="value" th:text="${nextEvent.titulo} ?: 'Sin título'"></div>
+                            <div class="label" th:text="${#temporals.format(nextEvent.fecha,'dd/MM/yyyy')} + ' · ' + ${nextEvent.horaInicio}"></div>
+                        </div>
+                    </div>
+                    <!-- Resumen estudiante -->
+                    <div class="info-card" th:if="${misPendientes != null}">
+                        <div class="icn purple"><i class="fa-solid fa-hourglass-half"></i></div>
+                        <div class="meta">
+                            <div class="label">Reservas pendientes</div>
+                            <div class="value" th:text="${misPendientes}">0</div>
+                        </div>
+                    </div>
+                    <div class="info-card" th:if="${miProximaReserva != null}">
+                        <div class="icn green"><i class="fa-solid fa-calendar-check"></i></div>
+                        <div class="meta">
+                            <div class="label">Próxima reserva</div>
+                            <div class="value" th:text="${#temporals.format(miProximaReserva.fecha,'dd/MM/yyyy')} + ' · ' + ${miProximaReserva.horaInicio}"></div>
+                            <div class="label" th:text="${miProximaReserva.lugar != null ? miProximaReserva.lugar.nombre : '—'}"></div>
+                        </div>
+                    </div>
+                    <!-- Admin Espacios: por aprobar -->
+                    <div class="info-card" th:if="${reservasPorAprobar != null}">
+                        <div class="icn purple"><i class="fa-solid fa-inbox"></i></div>
+                        <div class="meta">
+                            <div class="label">Reservas por aprobar</div>
+                            <div class="value" th:text="${reservasPorAprobar}">0</div>
+                        </div>
+                    </div>
+                    <!-- Admin TI: total usuarios -->
+                    <div class="info-card" th:if="${totalUsuarios != null}">
+                        <div class="icn blue"><i class="fa-solid fa-users"></i></div>
+                        <div class="meta">
+                            <div class="label">Usuarios totales</div>
+                            <div class="value" th:text="${totalUsuarios}">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="img-wrap">
+                    <img src="/img/chatbot.png" alt="Asistente virtual">
+                    <span class="glow"></span>
+                </div>
+            </div>
         </div>
-        <img src="/img/chatbot.png" alt="Portal Image" style="max-width: 38%; border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.1);">
     </div>
 
     <!-- FOOTER -->
