@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <title>Mis Reservas</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/theme.css">
+    <script src="/static/theme.js"></script>
     <style>
         body {
-            background: #f5f7fa;
+            background: var(--bg-primary);
             font-family: 'Segoe UI', Arial, sans-serif;
             margin: 0;
             min-height: 100vh;
@@ -16,9 +18,9 @@
         .container {
             max-width: 1000px;
             margin: 36px auto 0 auto;
-            background: #fff;
+            background: var(--bg-card);
             border-radius: 18px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            box-shadow: var(--shadow-md);
             padding: 36px 32px 28px 32px;
             flex: 1;
         }
@@ -29,7 +31,7 @@
             margin-bottom: 28px;
         }
         .header h2 {
-            color: #007bff;
+            color: var(--nav-text);
             margin: 0;
             font-size: 1.6rem;
         }
@@ -40,23 +42,23 @@
             font-weight: 500;
         }
         .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            background: var(--success-light);
+            color: var(--success-dark);
+            border: 1px solid var(--success);
         }
         .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+            background: var(--danger-light);
+            color: var(--danger-dark);
+            border: 1px solid var(--danger);
         }
         .form-section {
-            background: #f8f9ff;
+            background: var(--accent-light);
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 28px;
         }
         .form-section h3 {
-            color: #0056b3;
+            color: var(--button-primary);
             margin-top: 0;
             margin-bottom: 20px;
         }
@@ -69,19 +71,21 @@
         .form-group label {
             display: block;
             margin-bottom: 6px;
-            color: #333;
+            color: var(--text-primary);
             font-weight: 600;
         }
         .form-group input, .form-group select {
             width: 100%;
             padding: 10px;
             border-radius: 6px;
-            border: 1px solid #b0c4de;
+            border: 1px solid var(--input-border);
+            background: var(--input-bg);
+            color: var(--text-primary);
             font-size: 1rem;
         }
         .btn {
-            background: linear-gradient(90deg, #007bff 60%, #00c6ff 100%);
-            color: #fff;
+            background: var(--button-primary);
+            color: var(--button-text);
             border: none;
             border-radius: 8px;
             padding: 10px 18px;
@@ -92,14 +96,14 @@
             transition: background 0.2s;
         }
         .btn:hover {
-            background: linear-gradient(90deg, #0056b3 60%, #00aaff 100%);
-            color: #fff;
+            background: var(--button-hover);
+            color: var(--button-text);
         }
         .btn-danger {
-            background: #dc3545;
+            background: var(--danger);
         }
         .btn-danger:hover {
-            background: #c82333;
+            background: var(--danger-dark);
         }
         .table {
             width: 100%;
@@ -109,15 +113,16 @@
         .table th, .table td {
             padding: 12px;
             text-align: left;
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
         }
         .table th {
-            background: #f8f9ff;
-            color: #0056b3;
+            background: var(--table-header-bg);
+            color: var(--button-primary);
             font-weight: 600;
         }
         .table tr:hover {
-            background: #f8f9ff;
+            background: var(--table-row-hover);
         }
         .status-badge {
             padding: 4px 12px;
@@ -126,25 +131,25 @@
             font-weight: 600;
         }
         .status-pendiente {
-            background: #fff3cd;
-            color: #856404;
+            background: var(--warning-light);
+            color: var(--warning-dark);
         }
         .status-aprobada {
-            background: #d4edda;
-            color: #155724;
+            background: var(--success-light);
+            color: var(--success-dark);
         }
         .status-rechazada {
-            background: #f8d7da;
-            color: #721c24;
+            background: var(--danger-light);
+            color: var(--danger-dark);
         }
         .status-cancelada {
-            background: #e2e3e5;
-            color: #6c757d;
+            background: var(--table-header-bg);
+            color: var(--text-muted);
         }
         .back-link {
             display: inline-block;
             margin-top: 18px;
-            color: #007bff;
+            color: var(--button-primary);
             text-decoration: none;
             font-weight: 500;
         }
@@ -153,8 +158,8 @@
         }
         .footer {
             width: 100%;
-            background: linear-gradient(90deg, #222, #444);
-            color: #fff;
+            background: var(--footer-bg);
+            color: var(--footer-text);
             text-align: center;
             padding: 14px 0 10px 0;
             font-size: 0.95rem;
@@ -170,6 +175,10 @@
     </style>
 </head>
 <body>
+    <span class="theme-toggle-fixed" id="themeToggle">
+        <i class="fa-solid fa-moon"></i>
+    </span>
+
     <div class="container">
         <div class="header">
             <h2><i class="fa-solid fa-calendar-check"></i> Mis Reservas</h2>
@@ -254,13 +263,13 @@
                         </form>
                         <span th:if="${reserva.estado.toString() == 'RECHAZADA' and reserva.motivoRechazo != null}" 
                               th:title="${reserva.motivoRechazo}"
-                              style="color: #dc3545; cursor: help;">
+                              style="color: var(--danger); cursor: help;">
                             <i class="fa-solid fa-info-circle"></i> Ver motivo
                         </span>
                     </td>
                 </tr>
                 <tr th:if="${reservas == null or reservas.isEmpty()}">
-                    <td colspan="6" style="text-align: center; color: #6c757d; font-style: italic;">
+                    <td colspan="6" style="text-align: center; color: var(--text-muted); font-style: italic;">
                         No tienes reservas registradas
                     </td>
                 </tr>

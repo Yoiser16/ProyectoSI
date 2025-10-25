@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <title>Preguntas Frecuentes - Ayuda</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/theme.css">
+    <script src="/static/theme.js"></script>
     <style>
         body {
-            background: #f5f7fa;
+            background: var(--bg-primary);
             font-family: 'Segoe UI', Arial, sans-serif;
             margin: 0;
             min-height: 100vh;
@@ -14,26 +16,26 @@
             flex-direction: column;
         }
         .faq-header {
-            background: #fff;
+            background: var(--bg-card);
             padding: 28px 0 10px 0;
             text-align: center;
-            border-bottom: 2px solid #e0e0e0;
+            border-bottom: 2px solid var(--border-color);
         }
         .faq-header h1 {
-            color: #007bff;
+            color: var(--nav-text);
             font-size: 2rem;
             margin-bottom: 6px;
         }
         .faq-header p {
-            color: #444;
+            color: var(--text-primary);
             font-size: 1.1rem;
         }
         .faq-container {
             max-width: 700px;
             margin: 36px auto 0 auto;
-            background: #fff;
+            background: var(--bg-card);
             border-radius: 18px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            box-shadow: var(--shadow-md);
             padding: 36px 32px 28px 32px;
         }
         .faq-item {
@@ -41,7 +43,7 @@
         }
         .faq-question {
             font-weight: 600;
-            color: #0056b3;
+            color: var(--button-primary);
             font-size: 1.13rem;
             margin-bottom: 6px;
             display: flex;
@@ -49,26 +51,26 @@
         }
         .faq-question i {
             margin-right: 10px;
-            color: #007bff;
+            color: var(--nav-text);
         }
         .faq-answer {
-            color: #333;
+            color: var(--text-primary);
             font-size: 1.03rem;
             margin-left: 24px;
         }
         .faq-contact {
             margin-top: 38px;
-            background: #e3f0ff;
+            background: var(--accent-light);
             border-radius: 10px;
             padding: 18px 18px;
-            color: #0056b3;
+            color: var(--button-primary);
             font-size: 1.08rem;
             text-align: center;
         }
         .back-link {
             display: inline-block;
             margin: 18px 0 0 0;
-            color: #007bff;
+            color: var(--button-primary);
             text-decoration: none;
             font-weight: 500;
             font-size: 1rem;
@@ -78,8 +80,8 @@
         }
         .footer {
             width: 100%;
-            background: linear-gradient(90deg, #222, #444);
-            color: #fff;
+            background: var(--footer-bg);
+            color: var(--footer-text);
             text-align: center;
             padding: 14px 0 10px 0;
             font-size: 0.95rem;
@@ -93,6 +95,10 @@
     </style>
 </head>
 <body>
+    <span class="theme-toggle-fixed" id="themeToggle">
+        <i class="fa-solid fa-moon"></i>
+    </span>
+
     <div class="faq-header">
         <h1><i class="fa-regular fa-circle-question"></i> Preguntas Frecuentes</h1>
         <p>Encuentra aquí respuestas rápidas sobre el uso del portal y los servicios universitarios.</p>

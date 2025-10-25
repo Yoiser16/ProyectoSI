@@ -10,13 +10,17 @@
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
+    <!-- Theme -->
+    <link rel="stylesheet" href="/static/theme.css">
+    <script src="/static/theme.js"></script>
+
     <style>
         body {
             min-height: 100vh;
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #f5f6fa 0%, #e3f0ff 50%, #fceabb 100%);
+            background: var(--bg-primary);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -33,14 +37,14 @@
             width: 300px;
             height: 300px;
             border-radius: 18px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+            box-shadow: var(--shadow-md);
             margin-bottom: 10px;
         }
 
         .form-container {
-            background: #fff;
+            background: var(--bg-card);
             border-radius: 18px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+            box-shadow: var(--shadow-md);
             padding: 40px 35px;
             min-width: 340px;
             max-width: 380px;
@@ -48,26 +52,27 @@
 
         .form-container h2 {
             font-size: 2rem;
-            color: #007bff;
+            color: var(--nav-text);
             margin-bottom: 28px;
             text-align: center;
         }
 
         .form-label {
             font-weight: 500;
-            color: #333;
+            color: var(--text-primary);
         }
 
         .form-control {
-            background: #f7faff;
-            border: 1.5px solid #b3b3b3;
+            background: var(--input-bg);
+            border: 1.5px solid var(--input-border);
+            color: var(--text-primary);
             border-radius: 7px;
             padding-left: 40px;
         }
 
         .form-control:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 0 2px #cce6ff;
+            border-color: var(--button-primary);
+            box-shadow: 0 0 0 2px var(--accent-light);
         }
 
         .input-group-text {
@@ -77,7 +82,7 @@
             left: 10px;
             top: 50%;
             transform: translateY(-50%);
-            color: #007bff;
+            color: var(--nav-text);
             font-size: 1.2rem;
         }
 
@@ -86,16 +91,17 @@
         }
 
         .btn-primary {
-            background: linear-gradient(90deg, #007bff 60%, #00c6ff 100%);
+            background: var(--button-primary);
             border: none;
             border-radius: 7px;
             font-weight: 600;
             padding: 12px;
             transition: transform 0.15s ease-in-out;
+            color: var(--button-text);
         }
 
         .btn-primary:hover {
-            background: linear-gradient(90deg, #0056b3 60%, #00aaff 100%);
+            background: var(--button-hover);
             transform: translateY(-2px);
         }
 
@@ -103,18 +109,18 @@
             display: block;
             text-align: center;
             margin-top: 12px;
-            color: #007bff;
+            color: var(--button-primary);
             text-decoration: none;
             font-size: 0.95rem;
         }
 
         .link:hover {
-            color: #0056b3;
+            color: var(--button-hover);
             text-decoration: underline;
         }
 
         .error {
-            color: #d32f2f;
+            color: var(--danger);
             text-align: center;
             margin-top: 12px;
             font-size: 1rem;
@@ -156,6 +162,10 @@
     </style>
 </head>
 <body>
+    <span class="theme-toggle-fixed" id="themeToggle">
+        <i class="fa-solid fa-moon"></i>
+    </span>
+
     <div class="main-container">
         <div class="illustration-side">
             <img src="/img/logoU.png" alt="Ilustración institucional">
@@ -163,9 +173,9 @@
 
         <div class="form-container">
             <h2><i class="fa-solid fa-right-to-bracket me-2"></i>Iniciar sesión</h2>
-            <p th:if="${rolSeleccionado}" style="text-align:center;margin-top:-10px;margin-bottom:12px;color:#0056b3;">
+            <p th:if="${rolSeleccionado}" style="text-align:center;margin-top:-10px;margin-bottom:12px;color:var(--button-primary);">
                 Perfil seleccionado: <b th:text="${rolSeleccionado}">STUDENT</b>
-                · <a th:href="@{/auth/seleccionar-perfil}" style="text-decoration:underline;">cambiar</a>
+                · <a th:href="@{/auth/seleccionar-perfil}" style="text-decoration:underline;color:var(--button-primary);">cambiar</a>
             </p>
             <form th:action="@{/auth/login}" method="post" autocomplete="off">
                 

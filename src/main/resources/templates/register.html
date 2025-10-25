@@ -2,13 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Registro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/theme.css">
+    <script src="/static/theme.js"></script>
     <style>
         body {
             min-height: 100vh;
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Arial, sans-serif;
-            background: #f5f6fa;
+            background: var(--bg-primary);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -27,13 +30,13 @@
         .illustration-side img {
             width: 320px;
             border-radius: 18px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+            box-shadow: var(--shadow-md);
             margin-bottom: 10px;
         }
         .form-container {
-            background: #fff;
+            background: var(--bg-card);
             border-radius: 18px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+            box-shadow: var(--shadow-md);
             padding: 40px 30px 30px 30px;
             min-width: 340px;
             max-width: 400px;
@@ -45,13 +48,13 @@
             text-align: center;
             margin-bottom: 24px;
             font-size: 2rem;
-            color: #007bff;
+            color: var(--nav-text);
         }
         .form-container label {
             display: block;
             margin-bottom: 6px;
             font-weight: 500;
-            color: #333;
+            color: var(--text-primary);
         }
         .form-container input[type="text"],
         .form-container input[type="email"],
@@ -59,21 +62,22 @@
             width: 100%;
             padding: 10px 12px;
             margin-bottom: 18px;
-            border: 1px solid #bbb;
+            border: 1px solid var(--input-border);
             border-radius: 6px;
             font-size: 1rem;
             transition: border 0.2s;
-            background: #f7faff;
+            background: var(--input-bg);
+            color: var(--text-primary);
         }
         .form-container input:focus {
-            border: 1.5px solid #007bff;
+            border: 1.5px solid var(--button-primary);
             outline: none;
         }
         .form-container button {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(90deg, #007bff 60%, #00c6ff 100%);
-            color: #fff;
+            background: var(--button-primary);
+            color: var(--button-text);
             border: none;
             border-radius: 6px;
             font-size: 1.1rem;
@@ -81,17 +85,17 @@
             cursor: pointer;
             transition: background 0.2s, transform 0.15s;
             margin-bottom: 10px;
-            box-shadow: 0 2px 8px rgba(0,123,255,0.08);
+            box-shadow: var(--shadow-sm);
         }
         .form-container button:hover {
-            background: linear-gradient(90deg, #0056b3 60%, #00aaff 100%);
+            background: var(--button-hover);
             transform: translateY(-2px) scale(1.03);
         }
         .form-container .link {
             display: block;
             text-align: center;
             margin-top: 10px;
-            color: #007bff;
+            color: var(--button-primary);
             text-decoration: none;
             font-size: 0.98rem;
         }
@@ -99,20 +103,21 @@
             text-decoration: underline;
         }
         .form-container .error {
-            color: #d32f2f;
+            color: var(--danger);
             text-align: center;
             margin-bottom: 12px;
         }
         .password-criteria {
             margin-bottom: 10px;
             font-size: 0.98rem;
+            color: var(--text-primary);
         }
         .criteria-met {
-            color: #388e3c;
+            color: var(--success);
             font-weight: bold;
         }
         .criteria-not-met {
-            color: #d32f2f;
+            color: var(--danger);
             font-weight: bold;
         }
         .password-wrapper {
@@ -150,6 +155,10 @@
     </style>
 </head>
 <body>
+    <span class="theme-toggle-fixed" id="themeToggle">
+        <i class="fa-solid fa-moon"></i>
+    </span>
+
     <div class="main-container">
         <div class="illustration-side">
             <img src="/img/logoU.png" alt="Logo institucional">
