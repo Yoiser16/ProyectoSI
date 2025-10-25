@@ -50,4 +50,22 @@ public class MailService {
                 + "¡Muchos ánimos!";
         sendEmail(user.getEmail(), subject, body);
     }
+
+    public void sendConsentConfirmation(User user) {
+        if (user == null || !StringUtils.hasText(user.getEmail())) {
+            throw new IllegalArgumentException("Usuario o correo inválido");
+        }
+        String nombre = StringUtils.hasText(user.getNombre()) ? user.getNombre() : "usuario";
+        String subject = "Confirmación de consentimiento de datos";
+        String marketingTexto = Boolean.TRUE.equals(user.getMarketingEmailsAccepted())
+                ? "Has aceptado recibir comunicaciones informativas (fitness y notificaciones)."
+                : "No recibirás comunicaciones de marketing. Puedes cambiar esta preferencia en tu perfil cuando quieras.";
+        String body = "Hola " + nombre + ",\n\n"
+                + "Gracias por aceptar nuestra Política de Privacidad y el tratamiento de datos personales.\n"
+                + marketingTexto + "\n\n"
+                + "Fecha de consentimiento: " + (user.getConsentDate() != null ? user.getConsentDate() : "N/D") + "\n\n"
+                + "Puedes consultar la política completa en el sistema y modificar tus preferencias desde tu perfil.\n\n"
+                + "Saludos,\nEquipo de Sistema Sinfor";
+        sendEmail(user.getEmail(), subject, body);
+    }
 }

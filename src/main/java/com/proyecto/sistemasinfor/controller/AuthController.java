@@ -351,6 +351,13 @@ public class AuthController {
         
         userService.saveUser(usuario);
         
+        // Enviar correo de confirmación de consentimiento
+        try {
+            mailService.sendConsentConfirmation(usuario);
+        } catch (Exception e) {
+            // No bloquear el flujo por error de correo
+        }
+        
         // Actualizar usuario en sesión
         session.setAttribute("usuario", usuario);
         
