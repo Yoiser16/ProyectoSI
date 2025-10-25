@@ -4,11 +4,14 @@
     <title>Menú Principal</title>
     <!-- FontAwesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Theme System -->
+    <link rel="stylesheet" th:href="@{/theme.css}">
+    <script th:src="@{/theme.js}"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background: #f5f7fa;
+            background: var(--bg-primary);
             font-family: 'Segoe UI', Arial, sans-serif;
             min-height: 100vh;
             display: flex;
@@ -17,14 +20,14 @@
 
         /* ==== TOPBAR ==== */
         .topbar {
-            background: linear-gradient(90deg, #505050, #505050);
-            color: #fff;
+            background: var(--topbar-bg);
+            color: var(--topbar-text);
             padding: 10px 28px;
             display: flex;
             justify-content: flex-end;
             align-items: center;
             font-size: 1rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-sm);
             position: relative;
             z-index: 20;
         }
@@ -44,29 +47,29 @@
             position: absolute;
             right: 130px;
             top: 52px;
-            background: #fff;
-            border: 1px solid #e0e6ed;
+            background: var(--dropdown-bg);
+            border: 1px solid var(--dropdown-border);
             border-radius: 10px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-sm);
             min-width: 200px;
             animation: fadeIn 0.3s ease;
         }
         .user-dropdown a {
             display: block;
             padding: 12px 18px;
-            color: #333;
+            color: var(--text-primary);
             text-decoration: none;
             font-size: 0.95rem;
-            border-bottom: 1px solid #f0f0f0;
+            border-bottom: 1px solid var(--border-color);
             transition: background 0.2s;
         }
         .user-dropdown a:last-child { border-bottom: none; }
         .user-dropdown a:hover {
-            background: #f4f8ff;
+            background: var(--nav-bg);
             color: #007bff;
         }
         .topbar a {
-            color: #f7f5f5;
+            color: var(--topbar-text);
             text-decoration: none;
             font-weight: 600;
             margin-left: 20px;
@@ -78,9 +81,9 @@
         .portal-header {
             display: flex;
             align-items: center;
-            background: #ffffff;
+            background: var(--bg-secondary);
             padding: 24px 32px 12px 32px;
-            border-bottom: 1px solid #e6ebf1;
+            border-bottom: 1px solid var(--border-color);
         }
         .portal-header img {
             height: 60px;
@@ -89,7 +92,7 @@
         .portal-title {
             font-size: 2rem;
             font-weight: 700;
-            color: #0056b3;
+            color: var(--nav-text);
             letter-spacing: 1px;
         }
 
@@ -97,14 +100,14 @@
         .navbar-blocks {
             display: flex;
             flex-wrap: wrap;
-            background: #fff;
+            background: var(--bg-secondary);
             padding: 18px 32px 0 32px;
             gap: 16px;
-            border-bottom: 2px solid #e0e0e0;
+            border-bottom: 2px solid var(--border-color);
         }
         .nav-block {
-            background: #f0f6ff;
-            color: #0056b3;
+            background: var(--nav-bg);
+            color: var(--nav-text);
             min-width: 180px;
             flex: 1 1 180px;
             max-width: 240px;
@@ -113,12 +116,12 @@
             padding: 24px 10px 16px 10px;
             cursor: pointer;
             transition: all 0.25s ease;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            box-shadow: var(--shadow-sm);
             text-decoration: none;
             position: relative;
         }
         .nav-block:hover, .nav-block.selected {
-            background: linear-gradient(135deg, #007bff, #0056b3);
+            background: var(--nav-hover);
             color: #fff;
             transform: translateY(-3px);
             box-shadow: 0 6px 16px rgba(0,123,255,0.25);
@@ -142,16 +145,16 @@
         .main-content {
             max-width: 1100px;
             margin: 42px auto;
-            background: #fff;
+            background: var(--bg-card);
             border-radius: 20px;
-            box-shadow: 0 10px 35px rgba(0,0,0,0.08);
+            box-shadow: var(--shadow-md);
             padding: 0;
             text-align: left;
             overflow: hidden;
         }
         .hero-card {
             position: relative;
-            background: linear-gradient(135deg, #e9f3ff 0%, #ffffff 55%, #f5fbff 100%);
+            background: var(--bg-hero);
         }
         .hero-card::before,
         .hero-card::after {
@@ -166,27 +169,28 @@
         .hero-card::after  { width: 180px; height: 180px; background: #d8ffee; bottom: -60px; left: -40px; }
 
         .hero-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 10px; align-items: center; padding: 36px; }
-        .hero-copy h2 { color: #0d47a1; font-size: 2.1rem; margin: 8px 0 10px; letter-spacing: .3px; }
-        .hero-copy p { color: #2f3b52; font-size: 1.05rem; line-height: 1.7; margin-bottom: 22px; }
+        .hero-copy h2 { color: var(--nav-text); font-size: 2.1rem; margin: 8px 0 10px; letter-spacing: .3px; }
+        .hero-copy p { color: var(--text-secondary); font-size: 1.05rem; line-height: 1.7; margin-bottom: 22px; }
 
         .role-chip {
             display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px;
-            background: #e8f1ff; color: #0d47a1; border: 1px solid #cfe2ff; border-radius: 999px;
+            background: var(--nav-bg); color: var(--nav-text); border: 1px solid var(--card-border); border-radius: 999px;
             font-weight: 600; font-size: .92rem; box-shadow: 0 2px 8px rgba(13,71,161,.08);
         }
-        .role-chip i { color: #0d47a1; }
+        .role-chip i { color: var(--nav-text); }
 
-    .info-cards { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:14px; margin-top: 14px; }
-    .info-card { background:#fff; border:1px solid #e7eefb; border-radius:14px; padding:16px; box-shadow: 0 6px 18px rgba(0,0,0,.05); display:flex; align-items:center; gap:12px; }
-    .info-card .icn { width:40px; height:40px; display:grid; place-items:center; border-radius:12px; }
-    .icn.blue { background:#e8f1ff; color:#0d47a1; }
-    .icn.green { background:#eafff2; color:#008f4f; }
-    .icn.purple { background:#f2e9ff; color:#6f42c1; }
-    .info-card .meta { line-height:1.2; }
-    .meta .label { font-size:.82rem; color:#5b6b84; }
-    .meta .value { font-weight:800; color:#0d1b3a; }
-
-        .hero-visual { display:flex; justify-content:center; }
+        .info-cards { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:14px; margin-top: 14px; }
+        .info-card { background: var(--bg-card); border:1px solid var(--card-border); border-radius:14px; padding:16px; box-shadow: var(--shadow-sm); display:flex; align-items:center; gap:12px; }
+        .info-card .icn { width:40px; height:40px; display:grid; place-items:center; border-radius:12px; }
+        .icn.blue { background:#e8f1ff; color:#0d47a1; }
+        .icn.green { background:#eafff2; color:#008f4f; }
+        .icn.purple { background:#f2e9ff; color:#6f42c1; }
+        [data-theme="dark"] .icn.blue { background:#1f3a5f; color:#58a6ff; }
+        [data-theme="dark"] .icn.green { background:#0d3d26; color:#3fb950; }
+        [data-theme="dark"] .icn.purple { background:#2d1b4e; color:#a371f7; }
+        .info-card .meta { line-height:1.2; }
+        .meta .label { font-size:.82rem; color: var(--text-muted); }
+        .meta .value { font-weight:800; color: var(--text-primary); }        .hero-visual { display:flex; justify-content:center; }
         .img-wrap { position: relative; }
         .img-wrap img { max-width: 360px; border-radius: 18px; box-shadow: 0 14px 35px rgba(0,0,0,.1); animation: float 6s ease-in-out infinite; }
         .glow { position:absolute; inset:auto auto -16px 50%; transform: translateX(-50%); width: 80%; height: 22px; background: radial-gradient(50% 50% at 50% 50%, rgba(13,110,253,.25) 0%, rgba(13,110,253,0) 70%); filter: blur(6px); }
@@ -199,8 +203,8 @@
         /* ==== FOOTER ==== */
         .footer {
             width: 100%;
-            background: linear-gradient(90deg, #222, #444);
-            color: #fff;
+            background: var(--footer-bg);
+            color: var(--topbar-text);
             text-align: center;
             padding: 16px 0;
             font-size: 0.95rem;
@@ -274,6 +278,7 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            // User dropdown
             const userInfo = document.querySelector('.user-info');
             const dropdown = document.querySelector('.user-dropdown');
             if(userInfo && dropdown) {
@@ -292,12 +297,15 @@
     <!-- TOPBAR -->
     <div class="topbar">
         <span class="user-info" th:text="${session.nombreUsuario}">Usuario
-            <svg width="14" height="14" viewBox="0 0 20 20"><path fill="#fff" d="M5.5 8l4.5 4.5L14.5 8z"/></svg>
+            <svg width="14" height="14" viewBox="0 0 20 20"><path fill="currentColor" d="M5.5 8l4.5 4.5L14.5 8z"/></svg>
         </span>
         <div class="user-dropdown">
             <a th:href="@{/perfil}"><i class="fa-solid fa-user-pen"></i> Editar perfil</a>
             <a th:href="@{/auth/reset-password}"><i class="fa-solid fa-lock"></i> Cambiar contraseña</a>
         </div>
+        <span class="theme-toggle" id="themeToggle" title="Cambiar tema">
+            <i class="fa-solid fa-moon"></i>
+        </span>
         <a th:href="@{/faq}"><i class="fa-regular fa-circle-question"></i> AYUDA</a>
         <a th:href="@{/auth/logout}"><i class="fa-solid fa-right-from-bracket"></i> SALIR</a>
     </div>
