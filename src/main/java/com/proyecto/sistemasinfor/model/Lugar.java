@@ -1,6 +1,7 @@
 package com.proyecto.sistemasinfor.model;
 
 import jakarta.persistence.*;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "lugares")
@@ -10,10 +11,18 @@ public class Lugar {
     private Long id;
 
     private String nombre;
-    private String horario;
-    private String estado; // "abierto", "cerrado", etc.
+    private String horario; // Formato descriptivo: "10:00 AM - 4:00 PM"
+    private String estado; // "Abierto", "Cerrado", etc.
     private Integer capacidad;
     private String descripcion;
+
+    // Horarios para control automático (en formato 24h)
+    private LocalTime horaApertura; // Ej: 10:00
+    private LocalTime horaCierre; // Ej: 16:00
+
+    // Días de operación (formato: L,M,X,J,V,S,D donde 1=opera, 0=no opera)
+    // Por defecto "1,1,1,1,1,0,0" = Lunes a Viernes
+    private String diasOperacion;
 
     // Getters y setters
     public Long getId() {
@@ -62,5 +71,29 @@ public class Lugar {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public LocalTime getHoraApertura() {
+        return horaApertura;
+    }
+
+    public void setHoraApertura(LocalTime horaApertura) {
+        this.horaApertura = horaApertura;
+    }
+
+    public LocalTime getHoraCierre() {
+        return horaCierre;
+    }
+
+    public void setHoraCierre(LocalTime horaCierre) {
+        this.horaCierre = horaCierre;
+    }
+
+    public String getDiasOperacion() {
+        return diasOperacion;
+    }
+
+    public void setDiasOperacion(String diasOperacion) {
+        this.diasOperacion = diasOperacion;
     }
 }

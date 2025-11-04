@@ -63,7 +63,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public String login(@RequestParam String email, @RequestParam String password,
-        Model model, HttpSession session) {
+            Model model, HttpSession session) {
         LoginRequest request = new LoginRequest();
         request.setEmail(email);
         request.setPassword(password);
@@ -71,7 +71,8 @@ public class AuthController {
         // Verificar si la cuenta está bloqueada antes de intentar login
         Optional<User> userCheck = authService.findByEmail(email);
         if (userCheck.isPresent() && Boolean.TRUE.equals(userCheck.get().getAccountLocked())) {
-            model.addAttribute("error", "🔒 Tu cuenta ha sido bloqueada por múltiples intentos fallidos. Revisa tu correo para desbloquearla.");
+            model.addAttribute("error",
+                    "🔒 Tu cuenta ha sido bloqueada por múltiples intentos fallidos. Revisa tu correo para desbloquearla.");
             Object rolSel = session.getAttribute("rolSeleccionado");
             model.addAttribute("rolSeleccionado", rolSel != null ? rolSel.toString() : "");
             return "login";
@@ -91,23 +92,24 @@ public class AuthController {
             session.setAttribute("nombreUsuario", usuario.getNombre());
             session.setAttribute("rol", usuario.getRol());
             session.setAttribute("userRole", usuario.getRol().name()); // Agregar para compatibilidad con las vistas
-            
+
             // Verificar si ha aceptado el consentimiento de privacidad
             if (usuario.getPrivacyPolicyAccepted() == null || !usuario.getPrivacyPolicyAccepted()) {
                 return "redirect:/auth/consentimiento";
             }
-            
+
             return "redirect:/menu";
         }
-        
+
         // Login fallido - mostrar intentos restantes
         int remainingAttempts = authService.getRemainingAttempts(email);
         if (remainingAttempts > 0) {
-            model.addAttribute("error", "⚠️ Credenciales inválidas. Te quedan " + remainingAttempts + " intento(s) antes de que tu cuenta sea bloqueada.");
+            model.addAttribute("error", "⚠️ Credenciales inválidas. Te quedan " + remainingAttempts
+                    + " intento(s) antes de que tu cuenta sea bloqueada.");
         } else {
             model.addAttribute("error", "🔒 Tu cuenta ha sido bloqueada. Revisa tu correo para desbloquearla.");
         }
-        
+
         model.addAttribute("rolSeleccionado", String.valueOf(session.getAttribute("rolSeleccionado")));
         return "login";
     }
@@ -119,15 +121,19 @@ public class AuthController {
 
     @PostMapping("/register")
     public String register(@RequestParam String nombre, @RequestParam String email, @RequestParam String password,
-        Model model, HttpSession session) {
+            Model model, HttpSession session) {
         if (nombre.isEmpty() || email.isEmpty() || password.isEmpty()) {
             model.addAttribute("error", "Todos los campos son obligatorios.");
             return "register";
         }
 
-        String emailRegex = "^[A-Za-z0-9._%+-]+@(gmail\\.com|hotmail\\.com|outlook\\.com|yahoo\\.com)$";
-        if (!email.matches(emailRegex)) {
-            model.addAttribute("error", "Solo se permiten correos de Gmail, Hotmail, Outlook o Yahoo.");
+        // Validar dominios permitidos por rol (mantener dominios base y agregar
+        // institucionales)
+        Role rolSel = (Role) session.getAttribute("rolSeleccionado");
+        if (!authService.isAllowedEmailForRole(email, rolSel != null ? rolSel : Role.STUDENT)) {
+            model.addAttribute("error",
+                    "Correo no permitido para el perfil seleccionado. Permitidos: Gmail/Hotmail/Outlook/Yahoo, "
+                            + "o institucional @miremington.edu.co para Estudiantes y @uniremington.edu.co para otros roles.");
             return "register";
         }
 
@@ -152,7 +158,6 @@ public class AuthController {
         request.setEmail(email);
         request.setPassword(password);
 
-        Role rolSel = (Role) session.getAttribute("rolSeleccionado");
         if (rolSel != null) {
             authService.registerWithRole(request, rolSel);
         } else {
@@ -182,8 +187,8 @@ public class AuthController {
             return "reset-password";
         }
 
-    PasswordResetRequest request = new PasswordResetRequest();
-    request.setEmail(usuario.getEmail()); // Solo el usuario en sesión
+        PasswordResetRequest request = new PasswordResetRequest();
+        request.setEmail(usuario.getEmail()); // Solo el usuario en sesión
         request.setNewPassword(newPassword);
 
         boolean result = authService.resetPassword(request);
@@ -303,15 +308,16 @@ public class AuthController {
     @GetMapping("/unlock-account")
     public String unlockAccount(@RequestParam("token") String token, Model model) {
         boolean success = authService.unlockAccount(token);
-        
+
         if (success) {
             model.addAttribute("mensaje", "Tu cuenta ha sido desbloqueada exitosamente. Ya puedes iniciar sesión.");
             model.addAttribute("tipo", "success");
         } else {
-            model.addAttribute("mensaje", "El enlace de desbloqueo es inválido o ha expirado. Por favor contacta al soporte.");
+            model.addAttribute("mensaje",
+                    "El enlace de desbloqueo es inválido o ha expirado. Por favor contacta al soporte.");
             model.addAttribute("tipo", "error");
         }
-        
+
         return "unlock-account-result";
     }
 
@@ -332,7 +338,7 @@ public class AuthController {
             @RequestParam(name = "marketingEmailsAccepted", required = false) String marketingAccepted,
             HttpSession session,
             Model model) {
-        
+
         User usuario = (User) session.getAttribute("usuario");
         if (usuario == null) {
             return "redirect:/auth/login";
@@ -348,19 +354,19 @@ public class AuthController {
         usuario.setPrivacyPolicyAccepted(true);
         usuario.setMarketingEmailsAccepted(marketingAccepted != null && marketingAccepted.equals("true"));
         usuario.setConsentDate(java.time.LocalDateTime.now());
-        
+
         userService.saveUser(usuario);
-        
+
         // Enviar correo de confirmación de consentimiento
         try {
             mailService.sendConsentConfirmation(usuario);
         } catch (Exception e) {
             // No bloquear el flujo por error de correo
         }
-        
+
         // Actualizar usuario en sesión
         session.setAttribute("usuario", usuario);
-        
+
         return "redirect:/menu";
     }
 }

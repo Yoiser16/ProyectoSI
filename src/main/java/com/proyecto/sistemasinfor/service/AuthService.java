@@ -27,10 +27,9 @@ public class AuthService {
     @org.springframework.beans.factory.annotation.Value("${auth.max-attempts:3}")
     private int maxFailedAttempts;
 
-
     public Optional<User> login(LoginRequest request) {
         Optional<User> userOpt = userService.findByEmail(request.getEmail());
-        
+
         if (userOpt.isEmpty()) {
             return Optional.empty();
         }
@@ -97,6 +96,34 @@ public class AuthService {
         return userService.findByEmail(email);
     }
 
+    /**
+     * Valida si un email está permitido para el rol indicado.
+     * Mantiene los dominios ya permitidos (gmail/hotmail/outlook/yahoo)
+     * y agrega los dominios institucionales:
+     * - STUDENT: @miremington.edu.co
+     * - Otros roles (ADMIN_ESPACIOS, ADMIN_TI): @uniremington.edu.co
+     */
+    public boolean isAllowedEmailForRole(String email, Role role) {
+        if (email == null || email.isBlank())
+            return false;
+
+        String baseRegex = "^[A-Za-z0-9._%+-]+@(gmail\\.com|hotmail\\.com|outlook\\.com|yahoo\\.com)$";
+        String studentRegex = "^[A-Za-z0-9._%+-]+@miremington\\.edu\\.co$";
+        String othersRegex = "^[A-Za-z0-9._%+-]+@uniremington\\.edu\\.co$";
+
+        // Siempre permitir los dominios base
+        if (email.matches(baseRegex)) {
+            return true;
+        }
+
+        if (role == Role.STUDENT) {
+            return email.matches(studentRegex);
+        } else {
+            // Para cualquier otro rol
+            return email.matches(othersRegex);
+        }
+    }
+
     private void increaseFailedAttempts(User user) {
         int newFailAttempts = (user.getFailedAttempts() == null ? 0 : user.getFailedAttempts()) + 1;
         user.setFailedAttempts(newFailAttempts);
@@ -111,11 +138,11 @@ public class AuthService {
     private void lockAccount(User user) {
         user.setAccountLocked(true);
         user.setLockTime(LocalDateTime.now());
-        
+
         // Generar token único para desbloqueo
         String unlockToken = UUID.randomUUID().toString();
         user.setUnlockToken(unlockToken);
-        
+
         userService.saveUser(user);
 
         // Enviar correo de notificación con enlace de desbloqueo
@@ -123,18 +150,17 @@ public class AuthService {
             String unlockUrl = "http://localhost:8080/auth/unlock-account?token=" + unlockToken;
             String subject = "🔒 Cuenta Bloqueada - Acción Requerida";
             String message = String.format(
-                "Hola %s,\n\n" +
-                "Tu cuenta ha sido bloqueada debido a 3 intentos fallidos de inicio de sesión.\n\n" +
-                "Por seguridad, tu cuenta ha sido temporalmente bloqueada.\n\n" +
-                "Para desbloquear tu cuenta, haz clic en el siguiente enlace:\n" +
-                "%s\n\n" +
-                "Si no intentaste iniciar sesión, te recomendamos cambiar tu contraseña de inmediato.\n\n" +
-                "Este enlace expirará en 24 horas.\n\n" +
-                "Saludos,\n" +
-                "Equipo de Soporte",
-                user.getNombre(),
-                unlockUrl
-            );
+                    "Hola %s,\n\n" +
+                            "Tu cuenta ha sido bloqueada debido a 3 intentos fallidos de inicio de sesión.\n\n" +
+                            "Por seguridad, tu cuenta ha sido temporalmente bloqueada.\n\n" +
+                            "Para desbloquear tu cuenta, haz clic en el siguiente enlace:\n" +
+                            "%s\n\n" +
+                            "Si no intentaste iniciar sesión, te recomendamos cambiar tu contraseña de inmediato.\n\n" +
+                            "Este enlace expirará en 24 horas.\n\n" +
+                            "Saludos,\n" +
+                            "Equipo de Soporte",
+                    user.getNombre(),
+                    unlockUrl);
             mailService.sendEmail(user.getEmail(), subject, message);
         } catch (Exception e) {
             // Log error pero no fallar el proceso de bloqueo
@@ -144,16 +170,16 @@ public class AuthService {
 
     public boolean unlockAccount(String token) {
         Optional<User> userOpt = userService.findByUnlockToken(token);
-        
+
         if (userOpt.isEmpty()) {
             return false;
         }
 
         User user = userOpt.get();
-        
+
         // Verificar que el token no haya expirado (24 horas)
-        if (user.getLockTime() != null && 
-            user.getLockTime().plusHours(24).isBefore(LocalDateTime.now())) {
+        if (user.getLockTime() != null &&
+                user.getLockTime().plusHours(24).isBefore(LocalDateTime.now())) {
             return false;
         }
 

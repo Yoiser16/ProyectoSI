@@ -35,7 +35,7 @@
             color: #333;
             font-weight: 600;
         }
-        input[type="text"], select {
+        input[type="text"], select, input[type="time"] {
             width: 100%;
             padding: 12px;
             border-radius: 8px;
@@ -43,10 +43,99 @@
             font-size: 1rem;
             transition: border-color 0.2s;
         }
-        input[type="text"]:focus, select:focus {
+        input[type="text"]:focus, select:focus, input[type="time"]:focus {
             border-color: #007bff;
             outline: none;
             box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+        .horario-automatico {
+            background: #f0f8ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #d0e7ff;
+        }
+        .horario-automatico h3 {
+            color: #0056b3;
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .hora-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .dias-semana {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .dia-checkbox {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px;
+            border-radius: 6px;
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .dia-checkbox:hover {
+            border-color: #007bff;
+            background: #f8fbff;
+        }
+        .dia-checkbox input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+        .dia-checkbox label {
+            font-size: 0.8rem;
+            margin: 0;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .dia-checkbox input[type="checkbox"]:checked + label {
+            color: #007bff;
+            font-weight: 700;
+        }
+        .info-text {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .horario-editable {
+            position: relative;
+        }
+        .horario-editable .edit-hint {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 0.9rem;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+        .horario-editable input:focus + .edit-hint {
+            opacity: 0;
+        }
+        .auto-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .auto-label small {
+            color: #28a745;
+            font-weight: 500;
+            font-size: 0.8rem;
         }
         .btn-save {
             background: linear-gradient(90deg, #007bff 60%, #00c6ff 100%);
@@ -110,11 +199,85 @@
                 <input type="text" id="nombre" th:field="*{nombre}" placeholder="Ej: Gimnasio, Biblioteca, Sala de estudio" required>
             </div>
             
-            <div class="form-group">
-                <label for="horario">
-                    <i class="fa-solid fa-clock icon-prefix"></i>Horario de funcionamiento
+            <div class="form-group horario-editable">
+                <label for="horario" class="auto-label">
+                    <span>
+                        <i class="fa-solid fa-clock icon-prefix"></i>Horario de funcionamiento (Descripción)
+                    </span>
+                    <small>
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-generado
+                    </small>
                 </label>
-                <input type="text" id="horario" th:field="*{horario}" placeholder="Ej: 6:00 AM - 9:00 PM, Lunes a Sábado" required>
+                <input type="text" id="horario" th:field="*{horario}" placeholder="Configura las horas abajo y se generará automáticamente" required>
+                <i class="fa-solid fa-pencil edit-hint" title="Puedes editar manualmente si lo deseas"></i>
+            </div>
+            
+            <!-- Sección de Horario Automático -->
+            <div class="horario-automatico">
+                <h3>
+                    <i class="fa-solid fa-robot"></i>
+                    Control Automático de Estado
+                </h3>
+                
+                <div class="hora-row">
+                    <div class="form-group">
+                        <label for="horaApertura">
+                            <i class="fa-solid fa-door-open icon-prefix"></i>Hora de Apertura
+                        </label>
+                        <input type="time" id="horaApertura" name="horaAperturaStr" 
+                               th:value="${lugar.horaApertura != null ? lugar.horaApertura.toString() : ''}">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="horaCierre">
+                            <i class="fa-solid fa-door-closed icon-prefix"></i>Hora de Cierre
+                        </label>
+                        <input type="time" id="horaCierre" name="horaCierreStr" 
+                               th:value="${lugar.horaCierre != null ? lugar.horaCierre.toString() : ''}">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <i class="fa-solid fa-calendar-days icon-prefix"></i>Días de Operación
+                    </label>
+                    <div class="dias-semana" id="diasSemana">
+                        <div class="dia-checkbox">
+                            <input type="checkbox" id="diaLun" value="1">
+                            <label for="diaLun">L</label>
+                        </div>
+                        <div class="dia-checkbox">
+                            <input type="checkbox" id="diaMar" value="1">
+                            <label for="diaMar">M</label>
+                        </div>
+                        <div class="dia-checkbox">
+                            <input type="checkbox" id="diaMie" value="1">
+                            <label for="diaMie">X</label>
+                        </div>
+                        <div class="dia-checkbox">
+                            <input type="checkbox" id="diaJue" value="1">
+                            <label for="diaJue">J</label>
+                        </div>
+                        <div class="dia-checkbox">
+                            <input type="checkbox" id="diaVie" value="1">
+                            <label for="diaVie">V</label>
+                        </div>
+                        <div class="dia-checkbox">
+                            <input type="checkbox" id="diaSab" value="1">
+                            <label for="diaSab">S</label>
+                        </div>
+                        <div class="dia-checkbox">
+                            <input type="checkbox" id="diaDom" value="1">
+                            <label for="diaDom">D</label>
+                        </div>
+                    </div>
+                    <input type="hidden" id="diasOperacion" th:field="*{diasOperacion}">
+                </div>
+                
+                <p class="info-text">
+                    <i class="fa-solid fa-circle-info"></i>
+                    Si configuras estos horarios, el estado cambiará automáticamente de "Abierto" a "Cerrado" según la hora actual.
+                </p>
             </div>
             
             <div class="form-group">
@@ -123,10 +286,10 @@
                 </label>
                 <select id="estado" th:field="*{estado}" required>
                     <option value="">Selecciona un estado</option>
-                    <option value="abierto">🟢 Abierto</option>
-                    <option value="cerrado">🔴 Cerrado</option>
-                    <option value="mantenimiento">🔧 En mantenimiento</option>
-                    <option value="reservado">📅 Reservado</option>
+                    <option value="Abierto">🟢 Abierto</option>
+                    <option value="Cerrado">🔴 Cerrado</option>
+                    <option value="Mantenimiento">🔧 En mantenimiento</option>
+                    <option value="Reservado">📅 Reservado</option>
                 </select>
             </div>
             
@@ -143,5 +306,168 @@
     <div class="footer">
         © Yoiser Agualimpia, Januar Diaz - 2025
     </div>
+    
+    <script>
+        // Cargar días de operación al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            const diasOperacionInput = document.getElementById('diasOperacion');
+            const diasOperacion = diasOperacionInput.value || '1,1,1,1,1,0,0'; // Por defecto L-V
+            
+            // Marcar los checkboxes según los días de operación
+            const dias = diasOperacion.split(',');
+            const checkboxes = ['diaLun', 'diaMar', 'diaMie', 'diaJue', 'diaVie', 'diaSab', 'diaDom'];
+            checkboxes.forEach((id, index) => {
+                if (index < dias.length && dias[index].trim() === '1') {
+                    document.getElementById(id).checked = true;
+                }
+            });
+            
+            // Actualizar el campo oculto cuando cambian los checkboxes
+            const allCheckboxes = document.querySelectorAll('#diasSemana input[type="checkbox"]');
+            allCheckboxes.forEach(cb => {
+                cb.addEventListener('change', function() {
+                    actualizarDiasOperacion();
+                    generarDescripcionHorario();
+                });
+            });
+            
+            // Escuchar cambios en las horas
+            document.getElementById('horaApertura').addEventListener('change', generarDescripcionHorario);
+            document.getElementById('horaCierre').addEventListener('change', generarDescripcionHorario);
+        });
+        
+        function actualizarDiasOperacion() {
+            const checkboxes = ['diaLun', 'diaMar', 'diaMie', 'diaJue', 'diaVie', 'diaSab', 'diaDom'];
+            const valores = checkboxes.map(id => 
+                document.getElementById(id).checked ? '1' : '0'
+            );
+            document.getElementById('diasOperacion').value = valores.join(',');
+        }
+        
+        /**
+         * Genera automáticamente la descripción del horario basado en las horas y días seleccionados
+         */
+        function generarDescripcionHorario() {
+            const horaApertura = document.getElementById('horaApertura').value;
+            const horaCierre = document.getElementById('horaCierre').value;
+            const horarioInput = document.getElementById('horario');
+            
+            // Solo generar si ambas horas están configuradas
+            if (!horaApertura || !horaCierre) {
+                return;
+            }
+            
+            // Convertir horas de 24h a formato 12h AM/PM
+            const aperturaFormateada = formatearHora12h(horaApertura);
+            const cierreFormateada = formatearHora12h(horaCierre);
+            
+            // Obtener días seleccionados
+            const diasTexto = obtenerDiasTexto();
+            
+            // Generar descripción completa
+            const descripcion = `${aperturaFormateada} - ${cierreFormateada}${diasTexto ? ', ' + diasTexto : ''}`;
+            
+            // Actualizar el campo de horario
+            horarioInput.value = descripcion;
+        }
+        
+        /**
+         * Convierte hora de 24h (HH:MM) a formato 12h con AM/PM
+         */
+        function formatearHora12h(hora24) {
+            const [horas, minutos] = hora24.split(':').map(Number);
+            
+            if (horas === 0) {
+                return `12:${minutos.toString().padStart(2, '0')} AM`;
+            } else if (horas < 12) {
+                return `${horas}:${minutos.toString().padStart(2, '0')} AM`;
+            } else if (horas === 12) {
+                return `12:${minutos.toString().padStart(2, '0')} PM`;
+            } else {
+                return `${horas - 12}:${minutos.toString().padStart(2, '0')} PM`;
+            }
+        }
+        
+        /**
+         * Obtiene el texto descriptivo de los días seleccionados
+         */
+        function obtenerDiasTexto() {
+            const diasIds = ['diaLun', 'diaMar', 'diaMie', 'diaJue', 'diaVie', 'diaSab', 'diaDom'];
+            const diasNombres = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+            
+            const diasSeleccionados = diasIds.map((id, index) => {
+                return document.getElementById(id).checked ? index : -1;
+            }).filter(i => i !== -1);
+            
+            if (diasSeleccionados.length === 0) {
+                return '';
+            }
+            
+            // Caso especial: Lunes a Viernes (0-4)
+            if (diasSeleccionados.length === 5 && 
+                diasSeleccionados.every((d, i) => d === i)) {
+                return 'Lunes a Viernes';
+            }
+            
+            // Caso especial: Lunes a Sábado (0-5)
+            if (diasSeleccionados.length === 6 && 
+                diasSeleccionados.every((d, i) => d === i)) {
+                return 'Lunes a Sábado';
+            }
+            
+            // Caso especial: Todos los días (0-6)
+            if (diasSeleccionados.length === 7) {
+                return 'Todos los días';
+            }
+            
+            // Caso especial: Solo fines de semana
+            if (diasSeleccionados.length === 2 && 
+                diasSeleccionados.includes(5) && diasSeleccionados.includes(6)) {
+                return 'Sábados y Domingos';
+            }
+            
+            // Detectar rangos consecutivos
+            const rangos = [];
+            let inicio = diasSeleccionados[0];
+            let fin = diasSeleccionados[0];
+            
+            for (let i = 1; i < diasSeleccionados.length; i++) {
+                if (diasSeleccionados[i] === fin + 1) {
+                    fin = diasSeleccionados[i];
+                } else {
+                    if (inicio === fin) {
+                        rangos.push(diasNombres[inicio]);
+                    } else if (fin === inicio + 1) {
+                        rangos.push(diasNombres[inicio]);
+                        rangos.push(diasNombres[fin]);
+                    } else {
+                        rangos.push(`${diasNombres[inicio]} a ${diasNombres[fin]}`);
+                    }
+                    inicio = diasSeleccionados[i];
+                    fin = diasSeleccionados[i];
+                }
+            }
+            
+            // Agregar el último rango
+            if (inicio === fin) {
+                rangos.push(diasNombres[inicio]);
+            } else if (fin === inicio + 1) {
+                rangos.push(diasNombres[inicio]);
+                rangos.push(diasNombres[fin]);
+            } else {
+                rangos.push(`${diasNombres[inicio]} a ${diasNombres[fin]}`);
+            }
+            
+            // Formatear el resultado
+            if (rangos.length === 1) {
+                return rangos[0];
+            } else if (rangos.length === 2) {
+                return rangos.join(' y ');
+            } else {
+                const ultimos = rangos.pop();
+                return rangos.join(', ') + ' y ' + ultimos;
+            }
+        }
+    </script>
 </body>
 </html>

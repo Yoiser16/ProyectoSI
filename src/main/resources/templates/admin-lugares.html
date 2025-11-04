@@ -72,14 +72,33 @@
             border-radius: 20px;
             font-size: 0.9rem;
             font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
+        /* Verde para Abierto */
         .status-abierto {
             background: #d4edda;
             color: #155724;
+            border: 2px solid #28a745;
         }
+        /* Rojo para Cerrado */
         .status-cerrado {
             background: #f8d7da;
             color: #721c24;
+            border: 2px solid #dc3545;
+        }
+        /* Naranja para Mantenimiento */
+        .status-mantenimiento {
+            background: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffc107;
+        }
+        /* Naranja para Reservado */
+        .status-reservado {
+            background: #ffe5d0;
+            color: #8b4513;
+            border: 2px solid #fd7e14;
         }
         .btn-edit {
             background: #28a745;
@@ -146,8 +165,16 @@
                     <td th:text="${lugar.horario}">6:00 AM - 9:00 PM</td>
                     <td>
                         <span class="status-badge" 
-                              th:classappend="${lugar.estado == 'abierto' ? 'status-abierto' : 'status-cerrado'}"
-                              th:text="${lugar.estado}">abierto</span>
+                              th:classappend="${#strings.toLowerCase(lugar.estado) == 'abierto' ? 'status-abierto' : 
+                                               (#strings.toLowerCase(lugar.estado) == 'cerrado' ? 'status-cerrado' : 
+                                               (#strings.toLowerCase(lugar.estado) == 'mantenimiento' ? 'status-mantenimiento' : 'status-reservado'))}"
+                              th:text="${lugar.estado}">
+                            <i class="fa-solid" 
+                               th:classappend="${#strings.toLowerCase(lugar.estado) == 'abierto' ? 'fa-circle-check' : 
+                                                (#strings.toLowerCase(lugar.estado) == 'cerrado' ? 'fa-circle-xmark' : 
+                                                (#strings.toLowerCase(lugar.estado) == 'mantenimiento' ? 'fa-wrench' : 'fa-calendar-check'))}"></i>
+                            <span th:text="${lugar.estado}">abierto</span>
+                        </span>
                     </td>
                     <td>
                         <a class="btn-edit" th:href="@{'/admin/lugares/editar/' + ${lugar.id}}">

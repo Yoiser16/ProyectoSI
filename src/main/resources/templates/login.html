@@ -164,8 +164,14 @@
         <div class="form-container">
             <h2><i class="fa-solid fa-right-to-bracket me-2"></i>Iniciar sesión</h2>
             <p th:if="${rolSeleccionado}" style="text-align:center;margin-top:-10px;margin-bottom:12px;color:#0056b3;">
-                Perfil seleccionado: <b th:text="${rolSeleccionado}">STUDENT</b>
-                · <a th:href="@{/auth/seleccionar-perfil}" style="text-decoration:underline;">cambiar</a>
+                Perfil seleccionado:
+                <b th:switch="${rolSeleccionado}">
+                    <span th:case="'ADMIN_ESPACIOS'">Administrador de Espacios</span>
+                    <span th:case="'ADMIN_TI'">Administrador de TI</span>
+                    <span th:case="'STUDENT'">Estudiante</span>
+                    <span th:case="*" th:text="${rolSeleccionado}">Usuario</span>
+                </b>
+                · <a th:href="@{/auth/seleccionar-perfil}" style="text-decoration:underline;">Cambiar</a>
             </p>
             <form th:action="@{/auth/login}" method="post" autocomplete="off">
                 

@@ -350,6 +350,12 @@
             <div class="block-title">USUARIOS</div>
             <div class="block-desc">Gestión de cuentas</div>
         </a>
+        <a class="nav-block" th:href="@{/admin/config}"
+           th:if="${session.userRole != null and (session.userRole == 'ADMIN_ESPACIOS' or session.userRole == 'ADMIN_TI')}">
+            <i class="fa-solid fa-gear"></i>
+            <div class="block-title">CONFIG</div>
+            <div class="block-desc">Tareas y avisos</div>
+        </a>
         <a class="nav-block" th:href="@{/perfil}">
             <i class="fa-solid fa-user"></i>
             <div class="block-title">PERFIL</div>

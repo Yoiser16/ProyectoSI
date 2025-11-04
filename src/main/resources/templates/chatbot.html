@@ -36,10 +36,12 @@
         .message.user { justify-content: flex-end; }
         .message.bot { justify-content: flex-start; }
         .bubble {
-            padding: 10px 16px;
+            padding: 12px 16px;
             border-radius: 18px;
-            max-width: 80%;
-            font-size: 1.04rem;
+            max-width: 85%;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
         }
         .bubble.user {
             background: linear-gradient(90deg, #007bff 60%, #00c6ff 100%);
@@ -48,6 +50,15 @@
         .bubble.bot {
             background: #eaf4ff;
             color: #222;
+        }
+        .bubble.bot strong {
+            color: #0056b3;
+            font-weight: 600;
+        }
+        .bubble.bot br {
+            display: block;
+            content: "";
+            margin: 4px 0;
         }
         .chat-input {
             display: flex;
@@ -120,7 +131,18 @@
             msgDiv.className = 'message ' + sender;
             const bubble = document.createElement('div');
             bubble.className = 'bubble ' + sender;
-            bubble.textContent = text;
+            
+            // Para mensajes del bot, formatear el texto
+            if (sender === 'bot') {
+                // Convertir **texto** a <strong>texto</strong>
+                text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+                // Convertir saltos de línea a <br>
+                text = text.replace(/\n/g, '<br>');
+                bubble.innerHTML = text;
+            } else {
+                bubble.textContent = text;
+            }
+            
             msgDiv.appendChild(bubble);
             chatMessages.appendChild(msgDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
